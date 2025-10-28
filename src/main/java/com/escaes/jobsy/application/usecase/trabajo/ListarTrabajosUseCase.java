@@ -21,6 +21,18 @@ public class ListarTrabajosUseCase {
     public List<Trabajo> listar(){
         return trabajoRepository.findAll();
     }
-
-
+    /*
+     * Este método lista los trabajos asociados a un usuario solicitante específico.
+     * Recibe como parámetro el correo del solicitante y utiliza el repositorio de trabajos
+     */
+    public List<Trabajo> listarPorUsuarioSolicitante(String correoSolicitante){
+        return trabajoRepository.findBySolicitanteCorreo(correoSolicitante);
+    }
+    /*
+     * Este método lista los trabajos asociados a un usuario trabajador específico.
+     * Recibe como parámetro el correo del trabajador y utiliza el repositorio de trabajos
+     */
+    public List<Trabajo>listarPorUsuarioTrabajador(String correoTrabajador){
+        return trabajoRepository.findByTrabajadorCorreo(correoTrabajador);
+    }
 }
