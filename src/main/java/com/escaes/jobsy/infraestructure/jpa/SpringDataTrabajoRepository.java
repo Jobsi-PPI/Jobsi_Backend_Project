@@ -9,7 +9,11 @@ import java.util.UUID;
 
 public interface SpringDataTrabajoRepository extends JpaRepository<TrabajoEntity, UUID> {
 
-    List<TrabajoEntity>findBySolicitanteCorreo(String solicitanteCorreo);
-    List<TrabajoEntity>findByTrabajadorCorreo(String trabajadorCorreo);
-    Optional<TrabajoEntity>findByDescripcion(String nombre);
+    List<TrabajoEntity> findBySolicitanteCorreo(String solicitanteCorreo);
+
+    List<TrabajoEntity> findAllByTituloContainingIgnoreCase(String titulo);
+
+    List<TrabajoEntity> findByTrabajadorCorreo(String trabajadorCorreo);
+
+    Optional<TrabajoEntity> findByDescripcion(String nombre);
 }

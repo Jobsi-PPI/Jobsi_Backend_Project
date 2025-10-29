@@ -39,6 +39,7 @@ public class GestionTrabajosUseCase {
 
                 Trabajo trabajo = new Trabajo(
                                 UUID.randomUUID(),
+                                request.titulo(),
                                 request.descripcion(),
                                 new Date(),
                                 request.pago(),
@@ -76,7 +77,8 @@ public class GestionTrabajosUseCase {
                 }
 
                 Trabajo updated = new Trabajo(
-                                trabajo.id(), trabajo.descripcion(), trabajo.fechaPublicacion(), trabajo.pago(),
+                                trabajo.id(), trabajo.titulo(), trabajo.descripcion(), trabajo.fechaPublicacion(),
+                                trabajo.pago(),
                                 trabajo.ubicacion(), trabajo.solicitante(), trabajador, trabajo.categoria(),
                                 trabajo.estado(), trabajo.tipoPago());
 
