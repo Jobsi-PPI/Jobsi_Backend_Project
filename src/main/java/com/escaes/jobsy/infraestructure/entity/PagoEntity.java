@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder
 public class PagoEntity {
     @Id
-    @Column(name = "Tipo_Pago_UUID",columnDefinition = "RAW(16)")
+    @Column(name = "Tipo_Pago_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
     @Column(name = "Nombre_Pago")

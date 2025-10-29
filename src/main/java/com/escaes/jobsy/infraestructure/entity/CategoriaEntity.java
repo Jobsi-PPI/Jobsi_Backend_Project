@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="TBL_CATEGORIAS")
+@Table(name = "TBL_CATEGORIAS")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,7 +15,7 @@ import lombok.Setter;
 public class CategoriaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Categoria_AIID")
+    @Column(name = "Categoria_ID")
     private Long id;
 
     @Column(name = "Nombre_Categoria")

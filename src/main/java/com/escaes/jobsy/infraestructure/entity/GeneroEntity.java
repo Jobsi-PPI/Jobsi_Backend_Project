@@ -6,8 +6,9 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name="TBL_GENEROS")
-@Getter @Setter
+@Table(name = "TBL_SEXOS")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -15,10 +16,10 @@ public class GeneroEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="Genero_ID")
+    @Column(name = "Sexo_ID")
     private Long id;
 
-    @Column(name="Nombre_Genero", nullable = false, unique = true)
+    @Column(name = "Nombre_Sexo", nullable = false, unique = true)
     private String nombreGenero;
 
     @OneToMany(mappedBy = "genero", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

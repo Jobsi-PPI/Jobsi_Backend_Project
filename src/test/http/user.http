@@ -8,9 +8,26 @@ Content-Type: application/json
 Authorization: Bearer
 
 {
-  "descripcion": "Instalación de software.",
+  "titulo": "Instalacion de Software",
+  "descripcion": "Se requiere asesoria con la descarga de DockerDesktop.",
   "pago": 150.0,
   "tipoPago": "Efectivo",
-  "ubicacion": "Bogotá, Colombia",
-  "categoria": "OTRO"
+  "ubicacion": "Medellin, Colombia",
+  "categoria": "ASESORIA"
 }
+
+#Este endpoint permite al usuario autenticado registrarse a un trabajo específico
+# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
+#También se debe reemplazar {jobId} con el ID del trabajo al que se desea registrar
+PATCH http://localhost:8080/v1/jobs/{jobId}
+Authorization: Bearer
+
+#Este enpoint permite al usuario autenticado ver todos los trabajos que ha creado
+# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
+GET http://localhost:8080/v1/jobs/posted-by-me
+Authorization: Bearer
+
+#Este endpoint permite al usuario autenticado ver todos los trabajos a los que se ha registrado
+# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
+GET http://localhost:8080/v1/jobs/worked-by-me
+Authorization: Bearer 

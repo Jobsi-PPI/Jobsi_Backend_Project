@@ -16,10 +16,10 @@ public class EstadoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Estado_AIID")
+    @Column(name = "Estado_ID")
     private Long id;
 
-    @Column(name="Nombre_Estado")
+    @Column(name = "Nombre_Estado")
     private String nombre;
 
 }

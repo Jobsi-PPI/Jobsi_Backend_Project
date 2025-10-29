@@ -9,20 +9,21 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name="TBL_ROLES")
+@Table(name = "TBL_ROLES")
 public class RolEntity {
 
     @Id
-    @Column(name = "Rol_UUID", columnDefinition = "RAW(16)")
+    @Column(name = "Rol_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
     @Column(name = "Nombre", nullable = false)
     private String nombre;
 
-    @Column(name="Descripcion", nullable = true)
+    @Column(name = "Descripcion", nullable = true)
     private String descripcion;
 }

@@ -18,7 +18,6 @@ import com.escaes.jobsy.application.usecase.rol.ListarRolesUseCase;
 import com.escaes.jobsy.application.usecase.usuario.GestionUsuariosUseCase;
 import com.escaes.jobsy.application.usecase.usuario.ListarUsuariosUseCase;
 
-
 import com.escaes.jobsy.domain.model.Genero;
 import com.escaes.jobsy.domain.model.Rol;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +42,9 @@ public class DataInitializer implements CommandLineRunner {
 
     private final ListarRolesUseCase listarRolesUseCase;
 
-    private final GestionUsuariosUseCase  gestionUsuariosUseCase;
+    private final GestionUsuariosUseCase gestionUsuariosUseCase;
 
-    private final ListarUsuariosUseCase  listarUsuariosUseCase;
+    private final ListarUsuariosUseCase listarUsuariosUseCase;
 
     private final GestionEstadosUseCase gestionEstadosUseCase;
 
@@ -59,7 +58,6 @@ public class DataInitializer implements CommandLineRunner {
 
     private final GestionPagosUseCase gestionPagosUseCase;
 
-
     @Override
     public void run(String... args) throws Exception {
         initializeGeneros();
@@ -71,27 +69,29 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeGeneros() {
-        if(listarGenerosUseCase.contarGeneros()==0){
-            gestionGenerosUseCase.crearGenero(new GeneroRequest( "Masculino"));
-            gestionGenerosUseCase.crearGenero(new GeneroRequest( "Femenino"));
-            gestionGenerosUseCase.crearGenero(new GeneroRequest( "Alien"));
-            gestionGenerosUseCase.crearGenero(new GeneroRequest( "Otro"));
+        if (listarGenerosUseCase.contarGeneros() == 0) {
+            gestionGenerosUseCase.crearGenero(new GeneroRequest("Masculino"));
+            gestionGenerosUseCase.crearGenero(new GeneroRequest("Femenino"));
+            gestionGenerosUseCase.crearGenero(new GeneroRequest("Alien"));
+            gestionGenerosUseCase.crearGenero(new GeneroRequest("Otro"));
             System.out.println("Generos creados");
         }
 
     }
-    private void initializeRoles() {
-       if (listarRolesUseCase.contarRoles()==0){
-           gestionRolesUseCase.crearRol(new Rol(UUID.randomUUID(),"ADMIN",
-                   "Administrador del sistema con acceso completo"));
-           gestionRolesUseCase.crearRol(new Rol(UUID.randomUUID(),"USER",
-                   "Usuario regular con acceso limitado"));
 
-           System.out.println("Roles creados");
-       }
+    private void initializeRoles() {
+        if (listarRolesUseCase.contarRoles() == 0) {
+            gestionRolesUseCase.crearRol(new Rol(UUID.randomUUID(), "ADMIN",
+                    "Administrador del sistema con acceso completo"));
+            gestionRolesUseCase.crearRol(new Rol(UUID.randomUUID(), "USER",
+                    "Usuario regular con acceso limitado"));
+
+            System.out.println("Roles creados");
+        }
     }
-    private void initializeEstados(){
-        if (listarEstadosUseCase.contarEstados()==0){
+
+    private void initializeEstados() {
+        if (listarEstadosUseCase.contarEstados() == 0) {
             gestionEstadosUseCase.crearEstado(new EstadoRequest("PENDIENTE"));
             gestionEstadosUseCase.crearEstado(new EstadoRequest("FINALIZADO"));
             gestionEstadosUseCase.crearEstado(new EstadoRequest("ASIGNADO"));
@@ -100,8 +100,9 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Estados creados");
         }
     }
-    private void initializeCategorias(){
-        if (listarCategoriasUseCase.listarCategorias().isEmpty()){
+
+    private void initializeCategorias() {
+        if (listarCategoriasUseCase.listarCategorias().isEmpty()) {
             gestionCategoriasUseCase.crearCategoria("ASESORIAS");
             gestionCategoriasUseCase.crearCategoria("TAREAS");
             gestionCategoriasUseCase.crearCategoria("MATERIALES");
@@ -109,18 +110,20 @@ public class DataInitializer implements CommandLineRunner {
             gestionCategoriasUseCase.crearCategoria("OTRO");
         }
     }
-    private void initializeAdmin(){
-        if(listarUsuariosUseCase.contarUsuarios()==0){
-            Genero genero= gestionGenerosUseCase.obtenerGeneroPorNombre("Alien");
-            Rol rol= gestionRolesUseCase.obtenerRolPorNombre("ADMIN");
-            UsuarioRequest admin= new UsuarioRequest(1107834660,
-                    "escaes","admin@gmail.com","123",new Date(), "","");
-            gestionUsuariosUseCase.crearUsuario(admin,genero,rol);
+
+    private void initializeAdmin() {
+        if (listarUsuariosUseCase.contarUsuarios() == 0) {
+            Genero genero = gestionGenerosUseCase.obtenerGeneroPorNombre("Alien");
+            Rol rol = gestionRolesUseCase.obtenerRolPorNombre("ADMIN");
+            UsuarioRequest admin = new UsuarioRequest(1107834660,
+                    "admin", "admin@gmail.com", "123", new Date(), "", "");
+            gestionUsuariosUseCase.crearUsuario(admin, genero, rol);
             System.out.println("Admin creado");
         }
     }
-    private void initializeTipoPagos(){
-        if(listarPagosUseCase.contarTipoDePagos()==0){
+
+    private void initializeTipoPagos() {
+        if (listarPagosUseCase.contarTipoDePagos() == 0) {
             gestionPagosUseCase.crearTipoPago(new PagoRequest("EFECTIVO"));
             gestionPagosUseCase.crearTipoPago(new PagoRequest("TRANSFERENCIA"));
             gestionPagosUseCase.crearTipoPago(new PagoRequest("INTERCAMBIO"));
