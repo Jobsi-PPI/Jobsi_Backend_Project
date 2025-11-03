@@ -23,6 +23,7 @@ public class UsuarioMapper {
                 usuarioEntity.getDocumento(),
                 usuarioEntity.getCorreo(),
                 usuarioEntity.getClave(),
+                usuarioEntity.getTelefono(),
                 usuarioEntity.getBloqueado(),
                 usuarioEntity.getFechaNacimiento(),
                 usuarioEntity.getGenero() != null ? GeneroMapper.toDomain(usuarioEntity.getGenero()) : null,
@@ -40,6 +41,7 @@ public class UsuarioMapper {
                 usuarioEntity.getNombre(),
                 usuarioEntity.getDocumento(),
                 usuarioEntity.getCorreo(),
+                usuarioEntity.getTelefono(),
                 usuarioEntity.getClave(),
                 usuarioEntity.getBloqueado(),
                 usuarioEntity.getFechaNacimiento(),
@@ -57,6 +59,7 @@ public class UsuarioMapper {
                 .documento(usuario.documento())
                 .correo(usuario.correo())
                 .clave(usuario.clave())
+                .telefono(usuario.telefono())
                 .bloqueado(usuario.bloqueado())
                 .fechaNacimiento(usuario.fechaNacimiento())
                 .genero(usuario.genero() != null ? GeneroMapper.toEntity(usuario.genero()) : null)

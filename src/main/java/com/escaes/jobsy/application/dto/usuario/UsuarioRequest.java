@@ -7,6 +7,7 @@ public record UsuarioRequest(
         String nombre,
         String email,
         String password,
+        String telefono,
         Date fechaNacimiento,
         String genero,
         String rol

@@ -32,8 +32,12 @@ public class UsuarioEntity {
     @Column(name = "Contraseña", nullable = false)
     private String clave;
 
+    @Column(name = "Telefono", nullable = false, length = 20)
+    private String telefono;
+
     @Column(name = "Bloqueado", nullable = false)
-    private Boolean bloqueado = false;
+    @Builder.Default
+    private final Boolean bloqueado = false;
 
     @Column(name = "Fecha_Nacimiento", nullable = true)
     private Date fechaNacimiento;
