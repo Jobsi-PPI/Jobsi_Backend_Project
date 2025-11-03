@@ -12,6 +12,7 @@ Content-Type: application/json
   "nombre": "Carlos Ramírez",
   "email": "user@gmail.com",
   "password": "123",
+  "telefono": "3001234567",
   "fechaNacimiento": "1990-01-01",
   "genero": "Alien"
 }

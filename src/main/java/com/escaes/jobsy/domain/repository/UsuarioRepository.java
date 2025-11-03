@@ -12,6 +12,7 @@ public interface UsuarioRepository {
     Optional<Usuario> findById(UUID id);
     Optional<Usuario> findByDocumento(Integer documento);
     Optional<Usuario> findByCorreo(String correo);
+    Optional<Usuario>findByTelefono(String telefono);
     Usuario findByCorreoAndClave(String correo, String clave);
     Usuario findByCorreoAndClaveAndBloqueado(String correo, String clave, Boolean bloqueado);
     Usuario findByCorreoAndBloqueado(String correo, Boolean bloqueado);

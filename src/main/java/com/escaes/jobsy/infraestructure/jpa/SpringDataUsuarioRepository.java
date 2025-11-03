@@ -11,4 +11,6 @@ public interface SpringDataUsuarioRepository extends JpaRepository<UsuarioEntity
     Optional<UsuarioEntity> findByDocumento(Integer documento);
 
     Optional<UsuarioEntity> findByCorreo(String correo);
+
+    Optional<UsuarioEntity> findByTelefono(String telefono);
 }

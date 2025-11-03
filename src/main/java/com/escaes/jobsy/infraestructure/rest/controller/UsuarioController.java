@@ -53,7 +53,9 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponse> obtenerPorDocumento(@PathVariable Integer documento) {
 
         Usuario usuario = gestionUsuariosUseCase.obtenerUsuarioPorDocumento(documento);
-
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  
+        }
         return ResponseEntity.ok(UsuarioMapper.entityToResponse(usuario));
     }
 }

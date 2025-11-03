@@ -13,21 +13,23 @@ Authorization: Bearer
   "pago": 150.0,
   "tipoPago": "Efectivo",
   "ubicacion": "Medellin, Colombia",
-  "categoria": "ASESORIA"
+  "categoria": "ASESORIAS"
 }
 
-#Este endpoint permite al usuario autenticado registrarse a un trabajo específico
+###Este endpoint permite al usuario autenticado registrarse a un trabajo específico
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 #También se debe reemplazar {jobId} con el ID del trabajo al que se desea registrar
 PATCH http://localhost:8080/v1/jobs/{jobId}
 Authorization: Bearer
 
-#Este enpoint permite al usuario autenticado ver todos los trabajos que ha creado
+###Este enpoint permite al usuario autenticado ver todos los trabajos que ha creado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 GET http://localhost:8080/v1/jobs/posted-by-me
-Authorization: Bearer
+Accept: application/json
+Authorization: Bearer 
 
-#Este endpoint permite al usuario autenticado ver todos los trabajos a los que se ha registrado
+####Este endpoint permite al usuario autenticado ver todos los trabajos a los que se ha registrado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 GET http://localhost:8080/v1/jobs/worked-by-me
+Accept: application/json
 Authorization: Bearer 

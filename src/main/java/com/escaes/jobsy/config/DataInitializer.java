@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Component
 @Profile("dev")
@@ -58,77 +59,87 @@ public class DataInitializer implements CommandLineRunner {
 
     private final GestionPagosUseCase gestionPagosUseCase;
 
+    private static final Logger logger = Logger.getLogger(DataInitializer.class.getName());
+
     @Override
     public void run(String... args) throws Exception {
+        logger.info("Iniciando la inicialización de datos...");
         initializeGeneros();
         initializeRoles();
         initializeAdmin();
         initializeEstados();
         initializeCategorias();
         initializeTipoPagos();
+        logger.info("Inicialización de datos completada.");
     }
 
     private void initializeGeneros() {
         if (listarGenerosUseCase.contarGeneros() == 0) {
+            logger.info("Inicializando generos por defecto...");
             gestionGenerosUseCase.crearGenero(new GeneroRequest("Masculino"));
             gestionGenerosUseCase.crearGenero(new GeneroRequest("Femenino"));
             gestionGenerosUseCase.crearGenero(new GeneroRequest("Alien"));
             gestionGenerosUseCase.crearGenero(new GeneroRequest("Otro"));
-            System.out.println("Generos creados");
+            logger.info("Generos creados");
         }
 
     }
 
     private void initializeRoles() {
         if (listarRolesUseCase.contarRoles() == 0) {
+            logger.info("Inicializando roles por defecto...");
             gestionRolesUseCase.crearRol(new Rol(UUID.randomUUID(), "ADMIN",
                     "Administrador del sistema con acceso completo"));
             gestionRolesUseCase.crearRol(new Rol(UUID.randomUUID(), "USER",
                     "Usuario regular con acceso limitado"));
-
-            System.out.println("Roles creados");
+            logger.info("Roles creados");
         }
     }
 
     private void initializeEstados() {
         if (listarEstadosUseCase.contarEstados() == 0) {
+            logger.info("Inicializando estados por defecto...");
             gestionEstadosUseCase.crearEstado(new EstadoRequest("PENDIENTE"));
             gestionEstadosUseCase.crearEstado(new EstadoRequest("FINALIZADO"));
             gestionEstadosUseCase.crearEstado(new EstadoRequest("ASIGNADO"));
             gestionEstadosUseCase.crearEstado(new EstadoRequest("CANCELADO"));
             gestionEstadosUseCase.crearEstado(new EstadoRequest("BLOQUEADO"));
-            System.out.println("Estados creados");
+            logger.info("Estados creados");
         }
     }
 
     private void initializeCategorias() {
         if (listarCategoriasUseCase.listarCategorias().isEmpty()) {
+            logger.info("Inicializando categorias por defecto...");
             gestionCategoriasUseCase.crearCategoria("ASESORIAS");
             gestionCategoriasUseCase.crearCategoria("TAREAS");
             gestionCategoriasUseCase.crearCategoria("MATERIALES");
             gestionCategoriasUseCase.crearCategoria("ENTRENAMIENTOS");
             gestionCategoriasUseCase.crearCategoria("OTRO");
+            logger.info("Categorias creadas");
         }
     }
 
     private void initializeAdmin() {
         if (listarUsuariosUseCase.contarUsuarios() == 0) {
+            logger.info("Creando usuario admin por defecto...");
             Genero genero = gestionGenerosUseCase.obtenerGeneroPorNombre("Alien");
             Rol rol = gestionRolesUseCase.obtenerRolPorNombre("ADMIN");
             UsuarioRequest admin = new UsuarioRequest(1107834660,
-                    "admin", "admin@gmail.com", "123", new Date(), "", "");
+                    "admin", "admin@gmail.com", "123","300000", new Date(), "", "");
             gestionUsuariosUseCase.crearUsuario(admin, genero, rol);
-            System.out.println("Admin creado");
+            logger.info("Admin creado Exitosamente");
         }
     }
 
     private void initializeTipoPagos() {
         if (listarPagosUseCase.contarTipoDePagos() == 0) {
+            logger.info("Inicializando tipos de pago por defecto...");
             gestionPagosUseCase.crearTipoPago(new PagoRequest("EFECTIVO"));
             gestionPagosUseCase.crearTipoPago(new PagoRequest("TRANSFERENCIA"));
             gestionPagosUseCase.crearTipoPago(new PagoRequest("INTERCAMBIO"));
             gestionPagosUseCase.crearTipoPago(new PagoRequest("OTRO"));
-            System.out.println("Tipo de pago creado");
+            logger.info("Tipos de pago creados");
         }
     }
 }

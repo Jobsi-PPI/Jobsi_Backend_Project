@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 @Repository
 public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
 
@@ -21,7 +22,7 @@ public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
 
     @Override
     public void save(Usuario usuario) {
-        UsuarioEntity entity= UsuarioMapper.toEntity(usuario);
+        UsuarioEntity entity = UsuarioMapper.toEntity(usuario);
         springDataUsuarioRepository.save(entity);
     }
 
@@ -106,5 +107,11 @@ public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
     @Override
     public void delete(Usuario usuario) {
 
+    }
+
+    @Override
+    public Optional<Usuario> findByTelefono(String telefono) {
+        return springDataUsuarioRepository
+                .findByTelefono(telefono).map(UsuarioMapper::toDomain);
     }
 }
