@@ -20,12 +20,12 @@ public class InstitucionEntity {
     @Column(name = "Institucion_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Nombre_institucion", nullable = false)
+    @Column(name = "Nombre_institucion", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "Departamento", nullable = false)
+    @Column(name = "Departamento", nullable = false, length = 100)
     private String departamento;
 
-    @Column(name = "Municipio", nullable = true)
+    @Column(name = "Municipio", nullable = true, length = 100)
     private String municipio;
 }

@@ -19,7 +19,7 @@ public class GeneroEntity {
     @Column(name = "Sexo_ID")
     private Long id;
 
-    @Column(name = "Nombre_Sexo", nullable = false, unique = true)
+    @Column(name = "Nombre_Sexo", nullable = false, unique = true, length = 50)
     private String nombreGenero;
 
     @OneToMany(mappedBy = "genero", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

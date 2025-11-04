@@ -20,6 +20,6 @@ public class PagoEntity {
     @Column(name = "Tipo_Pago_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Nombre_Pago")
+    @Column(name = "Nombre_Pago", nullable = false, length = 50)
     private String nombre;
 }

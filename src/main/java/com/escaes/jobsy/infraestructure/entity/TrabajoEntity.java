@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,13 +17,13 @@ import java.util.UUID;
 public class TrabajoEntity {
 
     @Id
-    @Column(columnDefinition = "RAW(16)")
+    @Column(name="Trabajo_Id",columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Titulo", nullable = false)
+    @Column(name = "Titulo", nullable = false, length = 150)
     private String titulo;
 
-    @Column(name = "Descripcion", nullable = false)
+    @Column(name = "Descripcion", nullable = false, length = 500)
     private String descripcion;
 
     @Column(name = "Fecha_Publicacion", nullable = false)
@@ -31,7 +32,7 @@ public class TrabajoEntity {
     @Column(name = "Pago", nullable = false)
     private Double pago;
 
-    @Column(name = "Ubicacion", nullable = false)
+    @Column(name = "Ubicacion", nullable = false, length = 200)
     private String ubicacion;
 
     @ManyToOne()
@@ -53,4 +54,7 @@ public class TrabajoEntity {
     @ManyToOne
     @JoinColumn(name = "Tipos_De_Pago_ID", nullable = true, foreignKey = @ForeignKey(name = "FK_TRABAJO_TIPO_PAGO"))
     private PagoEntity tipoPago;
+
+    @OneToMany(mappedBy = "trabajo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ValoracionEntity> valoraciones;
 }
