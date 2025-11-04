@@ -20,16 +20,16 @@ public class UsuarioEntity {
     @Column(name = "Usuario_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Nombre", nullable = false)
+    @Column(name = "Nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "Documento", unique = true, nullable = false)
+    @Column(name = "Documento", unique = true, nullable = false, length = 20)
     private Integer documento;
 
-    @Column(name = "Correo", unique = true, nullable = false)
+    @Column(name = "Correo", unique = true, nullable = false, length = 100)
     private String correo;
 
-    @Column(name = "Contraseña", nullable = false)
+    @Column(name = "Contraseña", nullable = false, length = 255)
     private String clave;
 
     @Column(name = "Telefono", nullable = false, length = 20)

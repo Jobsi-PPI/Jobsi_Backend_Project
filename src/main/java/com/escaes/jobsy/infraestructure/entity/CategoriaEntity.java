@@ -18,6 +18,6 @@ public class CategoriaEntity {
     @Column(name = "Categoria_ID")
     private Long id;
 
-    @Column(name = "Nombre_Categoria")
+    @Column(name = "Nombre_Categoria", nullable = false, length = 100)
     private String nombre;
 }

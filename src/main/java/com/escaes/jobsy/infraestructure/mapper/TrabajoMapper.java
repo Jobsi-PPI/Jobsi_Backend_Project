@@ -1,5 +1,7 @@
 package com.escaes.jobsy.infraestructure.mapper;
 
+import java.util.List;
+
 import com.escaes.jobsy.application.dto.trabajo.CrearTrabajoRequest;
 import com.escaes.jobsy.application.dto.trabajo.TrabajoResponse;
 import com.escaes.jobsy.domain.model.Trabajo;
@@ -27,7 +29,9 @@ public class TrabajoMapper {
                 EstadoMapper.toDomain(trabajoEntity.getEstado()),
                 PagoMapper.toDomain(trabajoEntity.getTipoPago()));
     }
-
+    /*
+     * FALTA LOGICA PARA VALORACIONES DE TRABAJO
+     */
     public static TrabajoEntity toEntity(Trabajo trabajo) {
         if (trabajo == null) {
             return null;
@@ -43,7 +47,7 @@ public class TrabajoMapper {
                 trabajo.trabajador() != null ? UsuarioMapper.toEntity(trabajo.trabajador()) : null,
                 EstadoMapper.toEntity(trabajo.estado()),
                 CategoriaMapper.toEntity(trabajo.categoria()),
-                PagoMapper.toEntity(trabajo.tipoPago())
+                PagoMapper.toEntity(trabajo.tipoPago()),List.of()
 
         );
     }

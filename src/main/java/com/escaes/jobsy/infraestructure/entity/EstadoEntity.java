@@ -19,7 +19,7 @@ public class EstadoEntity {
     @Column(name = "Estado_ID")
     private Long id;
 
-    @Column(name = "Nombre_Estado")
+    @Column(name = "Nombre_Estado",length = 50, nullable = false)
     private String nombre;
 
 }
