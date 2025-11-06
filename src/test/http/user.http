@@ -10,7 +10,7 @@ Authorization: Bearer
 {
   "titulo": "Instalacion de Software",
   "descripcion": "Se requiere asesoria con la descarga de DockerDesktop.",
-  "pago": 150.0,
+  "pago": 50000.0,
   "tipoPago": "Efectivo",
   "ubicacion": "Medellin, Colombia",
   "categoria": "ASESORIAS"

@@ -2,25 +2,27 @@ package com.escaes.jobsy.domain.model;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import com.escaes.jobsy.application.dto.usuario.UsuarioRequest;
 
-public record Usuario(UUID id, String nombre, Integer documento, String correo,
+public record Usuario(Integer documento,String nombre, String correo,
         String clave, String telefono, Boolean bloqueado,
         Date fechaNacimiento,
+        Integer valoracionConteo,
+        Double valoracionPromedio,
         Genero genero, Rol rol, List<Trabajo> trabajos, List<Trabajo> trabajosRealizados) {
 
     public static Usuario crear(UsuarioRequest request, String encodedPassword, Genero genero, Rol rol) {
         return new Usuario(
-                UUID.randomUUID(),
-                request.nombre(),
                 request.documento(),
+                request.nombre(),
                 request.email(),
                 encodedPassword,
                 request.telefono(),
                 false,
                 request.fechaNacimiento(),
+                0,
+                0.0,
                 genero,
                 rol,
                 List.of(),

@@ -52,7 +52,7 @@ public class UsuarioController {
     @GetMapping("/admin/users/{documento}")
     public ResponseEntity<UsuarioResponse> obtenerPorDocumento(@PathVariable Integer documento) {
 
-        Usuario usuario = gestionUsuariosUseCase.obtenerUsuarioPorDocumento(documento);
+        Usuario usuario = gestionUsuariosUseCase.obtenerUsuarioPorId(documento);
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  
         }

@@ -7,7 +7,6 @@ import com.escaes.jobsy.infraestructure.entity.UsuarioEntity;
 
 import java.util.List;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UsuarioMapper {
@@ -18,14 +17,15 @@ public class UsuarioMapper {
             return null;
         }
         return new Usuario(
-                usuarioEntity.getId(),
-                usuarioEntity.getNombre(),
                 usuarioEntity.getDocumento(),
+                usuarioEntity.getNombre(),
                 usuarioEntity.getCorreo(),
                 usuarioEntity.getClave(),
                 usuarioEntity.getTelefono(),
                 usuarioEntity.getBloqueado(),
                 usuarioEntity.getFechaNacimiento(),
+                usuarioEntity.getValoracionConteo(),
+                usuarioEntity.getValoracionPromedio(),
                 usuarioEntity.getGenero() != null ? GeneroMapper.toDomain(usuarioEntity.getGenero()) : null,
                 usuarioEntity.getRol() != null ? RolMapper.toDomain(usuarioEntity.getRol()) : null,
                 usuarioEntity.getTrabajosSolicitados() != null ? usuarioEntity.getTrabajosSolicitados().stream().map(TrabajoMapper::toDomain).collect(Collectors.toList()) : List.of(),
@@ -37,14 +37,15 @@ public class UsuarioMapper {
             return null;
         }
         return new Usuario(
-                usuarioEntity.getId(),
-                usuarioEntity.getNombre(),
                 usuarioEntity.getDocumento(),
+                usuarioEntity.getNombre(),
                 usuarioEntity.getCorreo(),
                 usuarioEntity.getTelefono(),
                 usuarioEntity.getClave(),
                 usuarioEntity.getBloqueado(),
                 usuarioEntity.getFechaNacimiento(),
+                usuarioEntity.getValoracionConteo(),
+                usuarioEntity.getValoracionPromedio(),
                 usuarioEntity.getGenero() != null ? GeneroMapper.toDomain(usuarioEntity.getGenero()) : null,
                 usuarioEntity.getRol() != null ? RolMapper.toDomain(usuarioEntity.getRol()) : null,
                 List.of(),
@@ -54,14 +55,15 @@ public class UsuarioMapper {
 
     public static UsuarioEntity toEntity(Usuario usuario) {
         return UsuarioEntity.builder()
-                .id(usuario.id() != null ? usuario.id() : UUID.randomUUID())
-                .nombre(usuario.nombre())
                 .documento(usuario.documento())
+                .nombre(usuario.nombre())
                 .correo(usuario.correo())
                 .clave(usuario.clave())
                 .telefono(usuario.telefono())
                 .bloqueado(usuario.bloqueado())
                 .fechaNacimiento(usuario.fechaNacimiento())
+                .valoracionConteo(usuario.valoracionConteo())
+                .valoracionPromedio(usuario.valoracionPromedio())
                 .genero(usuario.genero() != null ? GeneroMapper.toEntity(usuario.genero()) : null)
                 .rol(usuario.rol() != null ? RolMapper.toEntity(usuario.rol()) : null)
                 .trabajosSolicitados(usuario.trabajos().stream().map(TrabajoMapper::toEntity).collect(Collectors.toList()))
@@ -75,10 +77,12 @@ public class UsuarioMapper {
         }
 
         return new UsuarioResponse(
-                usuario.id() != null ? usuario.id().toString() : null,
+                usuario.documento(),
                 usuario.nombre(),
                 usuario.correo(),
-                usuario.rol() != null ? usuario.rol().nombre() : null
+                usuario.rol().nombre(),
+                usuario.valoracionConteo(),
+                usuario.valoracionPromedio()
         );
     }
 
@@ -88,10 +92,12 @@ public class UsuarioMapper {
         }
 
         return new UsuarioResponse(
-                null,
+                request.documento(),
                 request.nombre(),
                 request.email(),
-                request.rol() != null ? request.rol() : "USER"
+                request.rol() != null ? request.rol() : "USER",
+                null,
+                null
         );
     }
 }
