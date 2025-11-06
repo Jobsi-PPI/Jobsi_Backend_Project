@@ -14,16 +14,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "TBL_ROLES")
+@Table(name = "ROLES")
 public class RolEntity {
 
     @Id
     @Column(name = "Rol_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Nombre", nullable = false, length = 50)
+    @Column(name = "Nombre_Rol", nullable = false, length = 50,unique = true)
     private String nombre;
 
-    @Column(name = "Descripcion", nullable = true, length = 200)
+    @Column(name = "Descripcion_Rol", nullable = true, length = 200)
     private String descripcion;
 }

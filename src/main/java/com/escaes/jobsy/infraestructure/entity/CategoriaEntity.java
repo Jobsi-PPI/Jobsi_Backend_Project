@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "TBL_CATEGORIAS")
+@Table(name = "CATEGORIAS")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,6 +18,6 @@ public class CategoriaEntity {
     @Column(name = "Categoria_ID")
     private Long id;
 
-    @Column(name = "Nombre_Categoria", nullable = false, length = 100)
+    @Column(name = "Nombre_Categoria", nullable = false, length = 100,unique = true)
     private String nombre;
 }

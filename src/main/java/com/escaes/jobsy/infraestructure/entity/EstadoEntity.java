@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "TBL_ESTADOS")
+@Table(name = "ESTADOS")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class EstadoEntity {
     @Column(name = "Estado_ID")
     private Long id;
 
-    @Column(name = "Nombre_Estado",length = 50, nullable = false)
+    @Column(name = "Nombre_Estado",length = 50, nullable = false,unique = true)
     private String nombre;
 
 }

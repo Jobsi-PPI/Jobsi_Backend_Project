@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "TBL_TIPO_PAGOS")
+@Table(name = "TIPO_PAGOS")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,6 +20,6 @@ public class PagoEntity {
     @Column(name = "Tipo_Pago_ID", columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Nombre_Pago", nullable = false, length = 50)
+    @Column(name = "Nombre_Tipo_Pago", nullable = false, length = 50,unique = true)
     private String nombre;
 }
