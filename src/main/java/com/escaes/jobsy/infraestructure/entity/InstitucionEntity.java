@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "TBL_INSTITUCIONES")
+@Table(name = "INSTITUCIONES")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,9 +23,9 @@ public class InstitucionEntity {
     @Column(name = "Nombre_institucion", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "Departamento", nullable = false, length = 100)
+    @Column(name = "Departamento_Institucion", nullable = false, length = 100)
     private String departamento;
 
-    @Column(name = "Municipio", nullable = true, length = 100)
+    @Column(name = "Municipio_Institucion", nullable = true, length = 100)
     private String municipio;
 }

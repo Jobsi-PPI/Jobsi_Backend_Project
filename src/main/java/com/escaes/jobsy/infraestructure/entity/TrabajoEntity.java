@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "TBL_TRABAJOS")
+@Table(name = "TRABAJOS")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,19 +20,20 @@ public class TrabajoEntity {
     @Column(name="Trabajo_Id",columnDefinition = "RAW(16)")
     private UUID id;
 
-    @Column(name = "Titulo", nullable = false, length = 150)
+    @Column(name = "Titulo_Trabajo", nullable = false, length = 150)
     private String titulo;
 
-    @Column(name = "Descripcion", nullable = false, length = 500)
+    @Column(name = "Descripcion_Trabajo", nullable = false, length = 500)
     private String descripcion;
 
-    @Column(name = "Fecha_Publicacion", nullable = false)
+    @Column(name = "Fecha_Publicacion_Trabajo", nullable = false)
     private Date fechaPublicacion;
 
-    @Column(name = "Pago", nullable = false)
-    private Double pago;
+    @Column(name = "Pago_Trabajo", nullable = false)
+    @Builder.Default
+    private Double pago=0.0;
 
-    @Column(name = "Ubicacion", nullable = false, length = 200)
+    @Column(name = "Ubicacion_Trabajo", nullable = false, length = 200)
     private String ubicacion;
 
     @ManyToOne()

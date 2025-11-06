@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "TBL_VALORACIONES")
+@Table(name = "VALORACIONES")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,10 +37,11 @@ public class ValoracionEntity {
     @JoinColumn(name = "Categoria_Id", nullable = false,foreignKey = @ForeignKey(name = "FK_Valoracion_Categoria"))
     private ValoracionCategoriaEntity categoria;
 
-    @Column(name="Puntuacion", nullable = false)
-    private Integer puntuacion;
+    @Column(name="Puntuacion_Valoracion", nullable = false)
+    @Builder.Default
+    private Integer puntuacion=0;
 
-    @Column(name="Comentario", length = 500)
+    @Column(name="Comentario_Valoracion", length = 500)
     private String comentario;
 
 }
