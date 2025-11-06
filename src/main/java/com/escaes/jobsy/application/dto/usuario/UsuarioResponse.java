@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record UsuarioResponse(
-        String uuid,
+        Integer documento,
         String nombre,
         String email,
-        String rol
+        String rol,
+        Integer valoracionConteo,
+        Double valoracionPromedio
 ) {}

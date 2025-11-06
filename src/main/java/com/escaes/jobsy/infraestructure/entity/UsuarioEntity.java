@@ -5,10 +5,9 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name = "TBL_USUARIOS")
+@Table(name = "USUARIOS")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,31 +15,39 @@ import java.util.UUID;
 @Builder
 public class UsuarioEntity {
 
-    @Id
+   /*  @Id
     @Column(name = "Usuario_ID", columnDefinition = "RAW(16)")
-    private UUID id;
-
-    @Column(name = "Nombre", nullable = false, length = 100)
-    private String nombre;
-
-    @Column(name = "Documento", unique = true, nullable = false, length = 20)
+    private UUID id; */
+    @Id
+    @Column(name = "Documento_Usuario", unique = true, nullable = false, length = 20)
     private Integer documento;
 
-    @Column(name = "Correo", unique = true, nullable = false, length = 100)
+    @Column(name = "Nombre_Usuario", nullable = false, length = 100)
+    private String nombre;
+
+    @Column(name = "Correo_Usuario", unique = true, nullable = false, length = 100)
     private String correo;
 
-    @Column(name = "Contraseña", nullable = false, length = 255)
+    @Column(name = "Contraseña_Usuario", nullable = false, length = 255)
     private String clave;
 
-    @Column(name = "Telefono", nullable = false, length = 20)
+    @Column(name = "Telefono_Usuario", nullable = false,unique = true, length = 20)
     private String telefono;
 
     @Column(name = "Bloqueado", nullable = false)
     @Builder.Default
     private final Boolean bloqueado = false;
 
-    @Column(name = "Fecha_Nacimiento", nullable = true)
+    @Column(name = "Fecha_Nacimiento_Usuario", nullable = true)
     private Date fechaNacimiento;
+
+    @Column(name="Valoracion_Conteo_Usuario", nullable = false)
+    @Builder.Default
+    private Integer valoracionConteo=0;
+
+    @Column(name = "Valoracion_Promedio_Usuario", nullable = false)
+    @Builder.Default
+    private Double valoracionPromedio=0.0;
 
     @ManyToOne
     @JoinColumn(name = "Sexo_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_USUARIO_SEXO"))

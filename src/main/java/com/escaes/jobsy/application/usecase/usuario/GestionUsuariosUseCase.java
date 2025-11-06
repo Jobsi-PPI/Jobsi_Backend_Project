@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
+
 @Service
 @RequiredArgsConstructor
 public class GestionUsuariosUseCase {
@@ -25,67 +26,66 @@ public class GestionUsuariosUseCase {
             throw new IllegalArgumentException("El usuario no puede ser nulo");
         }
 
-        usuarioRepository.findByDocumento(request.documento())
-                .ifPresent(u -> {
-                    throw new IllegalArgumentException("Ya existe un usuario con el documento proporcionado");
+        usuarioRepository.findByDocumentoOrCorreoOrTelefono(
+                request.documento(), request.email(), request.telefono()).ifPresent(existing -> {
+                    // puedes chequear el campo exacto para mensaje más claro
+                    if (existing.documento().equals(request.documento())) {
+                        throw new BusinessExceptions.ConflictException(
+                                "Ya existe un usuario con el documento proporcionado");
+                    }
+                    if (existing.correo().equalsIgnoreCase(request.email())) {
+                        throw new BusinessExceptions.ConflictException(
+                                "Ya existe un usuario con el correo proporcionado");
+                    }
+                    if (existing.telefono().equals(request.telefono())) {
+                        throw new BusinessExceptions.ConflictException(
+                                "Ya existe un usuario con el teléfono proporcionado");
+                    }
                 });
 
-        usuarioRepository.findByCorreo(request.email())
-                .ifPresent(u -> {
-                    throw new IllegalArgumentException("Ya existe un usuario con el correo proporcionado");
-                });
-
-        usuarioRepository.findByTelefono(request.telefono())
-                .ifPresent(u -> {
-                    throw new IllegalArgumentException("Ya existe un usuario con el teléfono proporcionado");
-                });
     }
 
     public void crearUsuario(UsuarioRequest request, Genero genero, Rol rol) {
 
         validateUser(request);
         String encodedPassword = passwordEncoder.encode(request.password());
-        Usuario usuario= Usuario.crear(request, encodedPassword, genero, rol);
+        Usuario usuario = Usuario.crear(request, encodedPassword, genero, rol);
         usuarioRepository.save(usuario);
     }
 
-    public Usuario obtenerUsuarioPorId(UUID id) {
+    public Usuario obtenerUsuarioPorId(Integer id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el ID proporcionado"));
-    }
-
-    public Usuario obtenerUsuarioPorDocumento(Integer documento) {
-        return usuarioRepository.findByDocumento(documento)
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Usuario no encontrado con el documento proporcionado"));
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException(
+                        "Usuario no encontrado con el documento proporcionado"));
     }
 
     public Usuario obtenerUsuarioPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el correo proporcionado"));
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException(
+                        "Usuario no encontrado con el correo proporcionado"));
     }
 
     public void actualizarUsuario(Usuario usuario) {
         if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo");
+            throw new BusinessExceptions.BadRequestException("El usuario no puede ser nulo");
         }
-        if (usuarioRepository.findById(usuario.id()).isEmpty()) {
-            throw new IllegalArgumentException("Usuario no encontrado con el ID proporcionado");
+        if (usuarioRepository.findById(usuario.documento()).isEmpty()) {
+            throw new BusinessExceptions.NotFoundException("Usuario no encontrado con el documento proporcionado");
         }
         usuarioRepository.save(usuario);
     }
 
-    public void eliminarUsuarioPorId(UUID id) {
+    public void eliminarUsuarioPorId(Integer id) {
         if (usuarioRepository.findById(id).isEmpty()) {
-            throw new IllegalArgumentException("Usuario no encontrado con el ID proporcionado");
+            throw new IllegalArgumentException("Usuario no encontrado con el documento proporcionado");
         }
         usuarioRepository.deleteById(id);
     }
 
     public void eliminarUsuarioPorDocumento(Integer documento) {
-        usuarioRepository.findByDocumento(documento);
-
-        usuarioRepository.deleteByDocumento(documento);
+        usuarioRepository.findById(documento).orElseThrow(
+                () -> new BusinessExceptions.NotFoundException("Usuario no encontrado con el documento proporcionado"));
+        usuarioRepository.deleteById(documento);
     }
 
     public void eliminarUsuarioPorCorreo(String correo) {
@@ -98,8 +98,8 @@ public class GestionUsuariosUseCase {
         if (usuario == null) {
             throw new IllegalArgumentException("El usuario no puede ser nulo");
         }
-        if (usuarioRepository.findById(usuario.id()).isEmpty()) {
-            throw new IllegalArgumentException("Usuario no encontrado con el ID proporcionado");
+        if (usuarioRepository.findById(usuario.documento()).isEmpty()) {
+            throw new IllegalArgumentException("Usuario no encontrado con el documento proporcionado");
         }
         usuarioRepository.delete(usuario);
     }
@@ -110,8 +110,10 @@ public class GestionUsuariosUseCase {
         if (usuario.bloqueado()) {
             throw new IllegalArgumentException("El usuario ya está bloqueado");
         }
-        Usuario usuarioBloqueado = new Usuario(usuario.id(), usuario.nombre(), usuario.documento(), usuario.correo(),
-                usuario.clave(), usuario.telefono(), true, usuario.fechaNacimiento(), usuario.genero(), usuario.rol(),
+        Usuario usuarioBloqueado = new Usuario(usuario.documento(), usuario.nombre(),
+                usuario.correo(),
+                usuario.clave(), usuario.telefono(), true, usuario.fechaNacimiento(), usuario.valoracionConteo(),
+                usuario.valoracionPromedio(), usuario.genero(), usuario.rol(),
                 usuario.trabajos(), usuario.trabajosRealizados());
         usuarioRepository.save(usuarioBloqueado);
     }
@@ -122,10 +124,10 @@ public class GestionUsuariosUseCase {
         if (!usuario.bloqueado()) {
             throw new IllegalArgumentException("El usuario ya está desbloqueado");
         }
-        Usuario usuarioDesbloqueado = new Usuario(usuario.id(), usuario.nombre(), usuario.documento(), usuario.correo(),
-                usuario.clave(), usuario.telefono(), false, usuario.fechaNacimiento(), usuario.genero(), usuario.rol(),
+        Usuario usuarioDesbloqueado = new Usuario(usuario.documento(), usuario.nombre(), usuario.correo(),
+                usuario.clave(), usuario.telefono(), false, usuario.fechaNacimiento(), usuario.valoracionConteo(),
+                usuario.valoracionPromedio(), usuario.genero(), usuario.rol(),
                 usuario.trabajos(), usuario.trabajosRealizados());
         usuarioRepository.save(usuarioDesbloqueado);
     }
-
 }

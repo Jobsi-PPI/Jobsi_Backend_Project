@@ -33,4 +33,25 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+    @ExceptionHandler(BusinessExceptions.ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflictException(BusinessExceptions.ConflictException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("status", HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+    @ExceptionHandler(BusinessExceptions.NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(BusinessExceptions.NotFoundException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+    @ExceptionHandler(BusinessExceptions.BadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequestException(BusinessExceptions.BadRequestException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }

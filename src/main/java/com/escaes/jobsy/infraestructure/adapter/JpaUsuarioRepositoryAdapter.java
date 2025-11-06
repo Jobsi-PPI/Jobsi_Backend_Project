@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
@@ -27,7 +26,7 @@ public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
     }
 
     @Override
-    public Optional<Usuario> findById(UUID id) {
+    public Optional<Usuario> findById(Integer id) {
         Optional<UsuarioEntity> entityOptional = springDataUsuarioRepository.findById(id);
         if (entityOptional.isPresent()) {
             UsuarioEntity entity = entityOptional.get();
@@ -37,8 +36,8 @@ public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
     }
 
     @Override
-    public Optional<Usuario> findByDocumento(Integer documento) {
-        return springDataUsuarioRepository.findByDocumento(documento)
+    public Optional<Usuario> findByDocumentoOrCorreoOrTelefono(Integer documento, String correo, String telefono) {
+        return springDataUsuarioRepository.findByDocumentoOrCorreoOrTelefono(documento, correo, telefono)
                 .map(UsuarioMapper::toDomain);
     }
 
@@ -90,12 +89,7 @@ public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
-
-    }
-
-    @Override
-    public void deleteByDocumento(Integer documento) {
+    public void deleteById(Integer documento) {
 
     }
 

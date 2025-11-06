@@ -8,7 +8,7 @@ POST http://localhost:8080/v1/public/users/create
 Content-Type: application/json
 
 {
-  "documento": 2,
+  "documento": 1111111111,
   "nombre": "Carlos Ramírez",
   "email": "user@gmail.com",
   "password": "123",

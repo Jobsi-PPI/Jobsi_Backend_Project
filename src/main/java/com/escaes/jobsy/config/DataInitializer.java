@@ -126,7 +126,7 @@ public class DataInitializer implements CommandLineRunner {
             Genero genero = gestionGenerosUseCase.obtenerGeneroPorNombre("Alien");
             Rol rol = gestionRolesUseCase.obtenerRolPorNombre("ADMIN");
             UsuarioRequest admin = new UsuarioRequest(1107834660,
-                    "admin", "admin@gmail.com", "123","300000", new Date(), "", "");
+                    "admin", "admin@gmail.com", "123", "300000", new Date(), "", "");
             gestionUsuariosUseCase.crearUsuario(admin, genero, rol);
             logger.info("Admin creado Exitosamente");
         }
