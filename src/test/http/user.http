@@ -19,14 +19,14 @@ Authorization: Bearer
 ###Este endpoint permite al usuario autenticado registrarse a un trabajo específico
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 #También se debe reemplazar {jobId} con el ID del trabajo al que se desea registrar
-PATCH http://localhost:8080/v1/jobs/{jobId}
+PATCH http://localhost:8080/v1/jobs/take-job/{jobId}
 Authorization: Bearer
 
 ###Este enpoint permite al usuario autenticado ver todos los trabajos que ha creado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 GET http://localhost:8080/v1/jobs/posted-by-me
 Accept: application/json
-Authorization: Bearer 
+Authorization: Bearer
 
 ####Este endpoint permite al usuario autenticado ver todos los trabajos a los que se ha registrado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
