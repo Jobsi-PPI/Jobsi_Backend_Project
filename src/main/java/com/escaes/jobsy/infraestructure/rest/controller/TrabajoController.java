@@ -90,4 +90,11 @@ public class TrabajoController {
         return ResponseEntity.ok(TrabajoMapper.entityToResponse(takedJob));
     }
 
+    @DeleteMapping("/jobs/published/delete/{jobId}")
+    public ResponseEntity<Void> eliminarTrabajoPublicado(@PathVariable UUID jobId, Authentication auth) {
+        String solicitanteCorreo = auth.getName();
+        //Ejecutamos el caso de uso
+        gestionTrabajosUseCase.eliminarTrabajoPorIdYUsuarioCorreoSolicitante(jobId, solicitanteCorreo);
+        return ResponseEntity.noContent().build();
+    }
 }
