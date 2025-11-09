@@ -28,7 +28,7 @@ public class GestionUsuariosUseCase {
 
         usuarioRepository.findByDocumentoOrCorreoOrTelefono(
                 request.documento(), request.email(), request.telefono()).ifPresent(existing -> {
-                    // puedes chequear el campo exacto para mensaje más claro
+
                     if (existing.documento().equals(request.documento())) {
                         throw new BusinessExceptions.ConflictException(
                                 "Ya existe un usuario con el documento proporcionado");
