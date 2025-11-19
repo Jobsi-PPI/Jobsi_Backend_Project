@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 @Tag(name = "Trabajos", description = "Operaciones relacionadas con trabajos")
@@ -26,6 +27,8 @@ public class TrabajoController {
 
     private final ListarTrabajosUseCase listarTrabajosUseCase;
 
+    private static final Logger LOG = Logger.getLogger(TrabajoController.class.getName());
+
     @PostMapping("/jobs/create")
     public ResponseEntity<TrabajoResponse> crearTrabajo(
             @RequestBody CrearTrabajoRequest request,
@@ -35,7 +38,7 @@ public class TrabajoController {
 
         // Ejecutamos el caso de uso
         gestionTrabajosUseCase.crearTrabajo(request, solicitanteCorreo);
-
+        LOG.info("Trabajo creado correctamente para usuario: " + solicitanteCorreo);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(TrabajoMapper.requestToResponse(request, solicitanteCorreo));
     }
@@ -63,6 +66,7 @@ public class TrabajoController {
         List<TrabajoResponse> responses = trabajos.stream()
                 .map(TrabajoMapper::entityToResponse)
                 .toList();
+        LOG.info("Trabajos obtenidos para usuario: " + solicitanteCorreo);
         return ResponseEntity.ok(responses);
     
     }
@@ -77,6 +81,7 @@ public class TrabajoController {
         List<TrabajoResponse> responses = trabajos.stream()
                 .map(TrabajoMapper::entityToResponse)
                 .toList();
+        LOG.info("Trabajos obtenidos para usuario: " + trabajadorCorreo);
         return ResponseEntity.ok(responses);
     }
 
@@ -86,15 +91,17 @@ public class TrabajoController {
 
         //Ejecutamos el caso de uso
         Trabajo takedJob=gestionTrabajosUseCase.asignarTrabajo(jobId, trabajadorCorreo);
-
+        LOG.info("Trabajo aplicado correo: " + trabajadorCorreo);
         return ResponseEntity.ok(TrabajoMapper.entityToResponse(takedJob));
     }
 
     @DeleteMapping("/jobs/published/delete/{jobId}")
     public ResponseEntity<Void> eliminarTrabajoPublicado(@PathVariable UUID jobId, Authentication auth) {
         String solicitanteCorreo = auth.getName();
+
         //Ejecutamos el caso de uso
         gestionTrabajosUseCase.eliminarTrabajoPorIdYUsuarioCorreoSolicitante(jobId, solicitanteCorreo);
+        LOG.info("Trabajo eliminado id: " + jobId + " solicitante correo: " + solicitanteCorreo);
         return ResponseEntity.noContent().build();
     }
 }

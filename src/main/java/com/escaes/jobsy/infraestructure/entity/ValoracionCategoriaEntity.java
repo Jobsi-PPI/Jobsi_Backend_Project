@@ -23,7 +23,7 @@ public class ValoracionCategoriaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="Valoracion_Categoria_ID", nullable = false)
+    @Column(name="Valoracion_Categoria_ID", nullable = false,length = 10)
     private Long id;
 
     @Column(name="Nombre_Valoracion_Categoria", nullable = false, length = 100,unique = true)

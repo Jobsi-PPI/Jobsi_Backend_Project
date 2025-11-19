@@ -16,7 +16,7 @@ public class GeneroEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Sexo_ID")
+    @Column(name = "Sexo_ID",length = 10)
     private Long id;
 
     @Column(name = "Nombre_Sexo", nullable = false, unique = true, length = 50)

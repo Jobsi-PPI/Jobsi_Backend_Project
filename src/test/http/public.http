@@ -16,6 +16,19 @@ Content-Type: application/json
   "fechaNacimiento": "1990-01-01",
   "genero": "Alien"
 }
+### Segundo usuario estandar de prueba
+POST http://localhost:8080/v1/public/users/create
+Content-Type: application/json
+
+{
+"documento": 222222222,
+"nombre": "Esteban",
+"email": "escaes@gmail.com",
+"password": "123",
+"telefono": "3145008081",
+"fechaNacimiento": "1990-01-01",
+"genero": "Masculino"
+}
 
 ###Listar Trabajos
 GET http://localhost:8080/v1/public/all-jobs

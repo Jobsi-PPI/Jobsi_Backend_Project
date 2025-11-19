@@ -22,6 +22,12 @@ Authorization: Bearer
 PATCH http://localhost:8080/v1/jobs/take-job/{jobId}
 Authorization: Bearer
 
+###Este endpoint permite al ususario solicitante eliminar sus propios trabajos
+# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
+#También se debe reemplazar {jobId} con el ID del trabajo al que se desea eliminar
+DELETE http://localhost:8080/v1/jobs/published/delete/{jobId}
+Authorization: Bearer
+
 ###Este enpoint permite al usuario autenticado ver todos los trabajos que ha creado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 GET http://localhost:8080/v1/jobs/posted-by-me

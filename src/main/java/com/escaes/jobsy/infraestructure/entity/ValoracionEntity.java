@@ -26,7 +26,7 @@ public class ValoracionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="Valoracion_Id")
+    @Column(name="Valoracion_Id", length = 10)
     private Long id;
 
     @ManyToOne
