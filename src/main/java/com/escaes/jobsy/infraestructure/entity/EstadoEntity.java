@@ -16,7 +16,7 @@ public class EstadoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Estado_ID")
+    @Column(name = "Estado_ID",length = 10)
     private Long id;
 
     @Column(name = "Nombre_Estado",length = 50, nullable = false,unique = true)

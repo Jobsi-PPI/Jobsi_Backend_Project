@@ -38,7 +38,7 @@ public class UsuarioEntity {
     @Builder.Default
     private final Boolean bloqueado = false;
 
-    @Column(name = "Fecha_Nacimiento_Usuario", nullable = true)
+    @Column(name = "Fecha_Nacimiento_Usuario", nullable = false)
     private Date fechaNacimiento;
 
     @Column(name="Valoracion_Conteo_Usuario", nullable = false)
