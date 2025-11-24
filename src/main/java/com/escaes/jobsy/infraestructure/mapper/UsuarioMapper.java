@@ -19,6 +19,8 @@ public class UsuarioMapper {
         return new Usuario(
                 usuarioEntity.getDocumento(),
                 usuarioEntity.getNombre(),
+                usuarioEntity.getPrimerApellido(),
+                usuarioEntity.getSegundoApellido(),
                 usuarioEntity.getCorreo(),
                 usuarioEntity.getClave(),
                 usuarioEntity.getTelefono(),
@@ -39,6 +41,8 @@ public class UsuarioMapper {
         return new Usuario(
                 usuarioEntity.getDocumento(),
                 usuarioEntity.getNombre(),
+                usuarioEntity.getPrimerApellido(),
+                usuarioEntity.getSegundoApellido(),
                 usuarioEntity.getCorreo(),
                 usuarioEntity.getTelefono(),
                 usuarioEntity.getClave(),
@@ -57,6 +61,8 @@ public class UsuarioMapper {
         return UsuarioEntity.builder()
                 .documento(usuario.documento())
                 .nombre(usuario.nombre())
+                .primerApellido(usuario.primerApellido())
+                .segundoApellido(usuario.segundoApellido())
                 .correo(usuario.correo())
                 .clave(usuario.clave())
                 .telefono(usuario.telefono())
@@ -79,6 +85,8 @@ public class UsuarioMapper {
         return new UsuarioResponse(
                 usuario.documento(),
                 usuario.nombre(),
+                usuario.primerApellido(),
+                usuario.segundoApellido(),
                 usuario.correo(),
                 usuario.rol().nombre(),
                 usuario.valoracionConteo(),
@@ -94,6 +102,8 @@ public class UsuarioMapper {
         return new UsuarioResponse(
                 request.documento(),
                 request.nombre(),
+                request.primerApellido(),
+                request.segundoApellido(),
                 request.email(),
                 request.rol() != null ? request.rol() : "USER",
                 null,

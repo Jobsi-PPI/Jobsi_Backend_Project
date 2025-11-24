@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.escaes.jobsy.application.dto.usuario.UsuarioRequest;
 
-public record Usuario(Integer documento,String nombre, String correo,
+public record Usuario(Integer documento,String nombre,String primerApellido,String segundoApellido, String correo,
         String clave, String telefono, Boolean bloqueado,
         Date fechaNacimiento,
         Integer valoracionConteo,
@@ -16,6 +16,8 @@ public record Usuario(Integer documento,String nombre, String correo,
         return new Usuario(
                 request.documento(),
                 request.nombre(),
+                request.primerApellido(),
+                request.segundoApellido(),
                 request.email(),
                 encodedPassword,
                 request.telefono(),
