@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public record UsuarioResponse(
         Integer documento,
         String nombre,
+        String primerApellido,
+        String segundoApellido,
         String email,
         String rol,
         Integer valoracionConteo,

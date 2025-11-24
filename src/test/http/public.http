@@ -9,7 +9,8 @@ Content-Type: application/json
 
 {
   "documento": 1111111111,
-  "nombre": "Carlos Ramírez",
+  "nombre": "Carlos",
+  "primerApellido": "Ramirez",
   "email": "user@gmail.com",
   "password": "123",
   "telefono": "3001234567",
@@ -21,13 +22,15 @@ POST http://localhost:8080/v1/public/users/create
 Content-Type: application/json
 
 {
-"documento": 222222222,
-"nombre": "Esteban",
-"email": "escaes@gmail.com",
-"password": "123",
-"telefono": "3145008081",
-"fechaNacimiento": "1990-01-01",
-"genero": "Masculino"
+    "documento": 222222222,
+    "nombre": "Esteban",
+    "primerApellido": "Cano",
+    "segundoApellido": "Estrada",
+    "email": "escaes@gmail.com",
+    "password": "123",
+    "telefono": "3145008081",
+    "fechaNacimiento": "1990-01-01",
+    "genero": "Masculino"
 }
 
 ###Listar Trabajos

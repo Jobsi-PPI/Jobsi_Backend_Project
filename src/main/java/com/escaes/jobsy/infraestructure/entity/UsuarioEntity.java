@@ -25,6 +25,12 @@ public class UsuarioEntity {
     @Column(name = "Nombre_Usuario", nullable = false, length = 100)
     private String nombre;
 
+    @Column(name = "Primer_Apellido_Usuario", nullable = false, length = 50)
+    private String primerApellido;
+
+    @Column(name = "Segundo_Apellido_Usuario", length = 50)
+    private String segundoApellido;
+
     @Column(name = "Correo_Usuario", unique = true, nullable = false, length = 100)
     private String correo;
 

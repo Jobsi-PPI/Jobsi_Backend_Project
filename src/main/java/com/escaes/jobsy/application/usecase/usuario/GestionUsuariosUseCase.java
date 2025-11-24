@@ -25,6 +25,12 @@ public class GestionUsuariosUseCase {
         if (request == null) {
             throw new IllegalArgumentException("El usuario no puede ser nulo");
         }
+        if(request.nombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede ser vacío ");
+        }
+        if (request.primerApellido().isBlank()) {
+            throw new IllegalArgumentException("El primer apellido no puede ser vacío");
+        }
 
         usuarioRepository.findByDocumentoOrCorreoOrTelefono(
                 request.documento(), request.email(), request.telefono()).ifPresent(existing -> {
@@ -110,7 +116,7 @@ public class GestionUsuariosUseCase {
         if (usuario.bloqueado()) {
             throw new IllegalArgumentException("El usuario ya está bloqueado");
         }
-        Usuario usuarioBloqueado = new Usuario(usuario.documento(), usuario.nombre(),
+        Usuario usuarioBloqueado = new Usuario(usuario.documento(), usuario.nombre(), usuario.primerApellido(), usuario.segundoApellido(),
                 usuario.correo(),
                 usuario.clave(), usuario.telefono(), true, usuario.fechaNacimiento(), usuario.valoracionConteo(),
                 usuario.valoracionPromedio(), usuario.genero(), usuario.rol(),
@@ -124,7 +130,8 @@ public class GestionUsuariosUseCase {
         if (!usuario.bloqueado()) {
             throw new IllegalArgumentException("El usuario ya está desbloqueado");
         }
-        Usuario usuarioDesbloqueado = new Usuario(usuario.documento(), usuario.nombre(), usuario.correo(),
+        Usuario usuarioDesbloqueado = new Usuario(usuario.documento(), usuario.nombre(),
+                usuario.primerApellido(), usuario.segundoApellido(), usuario.correo(),
                 usuario.clave(), usuario.telefono(), false, usuario.fechaNacimiento(), usuario.valoracionConteo(),
                 usuario.valoracionPromedio(), usuario.genero(), usuario.rol(),
                 usuario.trabajos(), usuario.trabajosRealizados());
