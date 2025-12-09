@@ -31,7 +31,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Component
-@Profile("dev")
+@Profile("prod")
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 

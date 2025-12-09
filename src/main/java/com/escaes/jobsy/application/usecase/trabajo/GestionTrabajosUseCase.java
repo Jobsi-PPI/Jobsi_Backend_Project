@@ -91,11 +91,16 @@ public class GestionTrabajosUseCase {
             throw new IllegalArgumentException("No puedes asginarte tu propio trabajo :O ");
         }
 
+        // 🔥 Cambiar el estado a ASIGNADO
+        Estado estadoAsignado = estadoRepository.findByNombre("ASIGNADO")
+                .orElseThrow(() -> new IllegalArgumentException("Estado 'ASIGNADO' no existe"));
+
         Trabajo updated = new Trabajo(
                 trabajo.id(), trabajo.titulo(), trabajo.descripcion(), trabajo.fechaPublicacion(),
                 trabajo.pago(),
                 trabajo.ubicacion(), trabajo.solicitante(), trabajador, trabajo.categoria(),
-                trabajo.estado(), trabajo.tipoPago());
+                estadoAsignado,
+                trabajo.tipoPago());
 
         trabajoRepository.save(updated);
 
