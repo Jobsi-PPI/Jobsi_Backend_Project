@@ -1,5 +1,7 @@
 package com.escaes.jobsy.config.jwt;
 
+import com.escaes.jobsy.domain.model.Usuario;
+import com.escaes.jobsy.domain.repository.UsuarioRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -14,12 +16,20 @@ import java.util.Date;
 @Component
 public class JwtProvider {
     private final String SECRET_KEY = "miClaveUltraSeguraDe32Caracteres!!1234";
+    private final UsuarioRepository usuarioRepository;
 
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
+    public JwtProvider(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
     public String generateToken(Authentication authentication) {
 
-        String username = authentication.getName();
+        String correo = authentication.getName();
+
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         String role = authentication.getAuthorities().stream()
                 .findFirst()
@@ -27,8 +37,10 @@ public class JwtProvider {
                 .orElseThrow(() -> new RuntimeException("El usuario no tiene rol"));
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(usuario.correo())
                 .claim("role", role)
+                .claim("nombre", usuario.nombre())
+                .claim("genero", usuario.genero().nombreGenero())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 día
                 .signWith(key)
