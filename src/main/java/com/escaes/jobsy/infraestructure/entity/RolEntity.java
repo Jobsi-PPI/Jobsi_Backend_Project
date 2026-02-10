@@ -18,7 +18,7 @@ import java.util.UUID;
 public class RolEntity {
 
     @Id
-    @Column(name = "Rol_ID", columnDefinition = "RAW(16)")
+    @Column(name = "Rol_ID", columnDefinition = "uuid")
     private UUID id;
 
     @Column(name = "Nombre_Rol", nullable = false, length = 50,unique = true)

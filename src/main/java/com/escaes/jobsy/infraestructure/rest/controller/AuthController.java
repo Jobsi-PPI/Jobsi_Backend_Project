@@ -37,9 +37,4 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    @GetMapping("/ping")
-    public String ping() {
-        return "pong";
-    }
-
 }
