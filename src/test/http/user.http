@@ -28,6 +28,12 @@ Authorization: Bearer
 DELETE http://localhost:8080/v1/jobs/published/delete/{jobId}
 Authorization: Bearer
 
+####Este endpoint permite al usuario autenticado abandonar algún trabajo al que se haya postulado
+# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
+PATCH http://localhost:8080/v1/jobs/abandon/{jobId}
+Accept: application/json
+Authorization: Bearer
+
 ###Este enpoint permite al usuario autenticado ver todos los trabajos que ha creado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 GET http://localhost:8080/v1/jobs/posted-by-me
@@ -38,4 +44,6 @@ Authorization: Bearer
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 GET http://localhost:8080/v1/jobs/worked-by-me
 Accept: application/json
-Authorization: Bearer 
+Authorization: Bearer
+
+

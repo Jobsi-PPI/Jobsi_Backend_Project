@@ -104,4 +104,20 @@ public class TrabajoController {
         LOG.info("Trabajo eliminado id: " + jobId + " solicitante correo: " + solicitanteCorreo);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/jobs/abandon/{jobId}")
+    public ResponseEntity<Void> abandonarTrabajo(@PathVariable UUID jobId, Authentication auth) {
+        String trabajadorCorreo = auth.getName();
+
+        //Ejecutamos el caso de uso
+        gestionTrabajosUseCase.abandonarTrabajoPorIdYUsuarioCorreoTrabajador(jobId, trabajadorCorreo);
+        LOG.info("Trabajo abandonado. JobId: " + jobId + ", trabajador: " + trabajadorCorreo);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
 }
+
+
+
