@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -48,7 +49,7 @@ public class ListarUsuariosUseCase {
     public List<Usuario> listarUsuariosPorRol(String rol) {
         return usuarioRepository.findAllByRol(rol);
     }
-    public List<Usuario> listarUsuariosPorFechaNacimiento(String fechaInicio, String fechaFin) {
+    public List<Usuario> listarUsuariosPorFechaNacimiento(LocalDate fechaInicio, LocalDate fechaFin) {
         return usuarioRepository.findAllByFechaNacimientoBetween(fechaInicio, fechaFin);
     }
 

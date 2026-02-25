@@ -3,7 +3,7 @@ package com.escaes.jobsy.infraestructure.mapper;
 import com.escaes.jobsy.application.dto.estado.EstadoRequest;
 import com.escaes.jobsy.application.dto.estado.EstadoResponse;
 import com.escaes.jobsy.domain.model.Estado;
-import com.escaes.jobsy.infraestructure.entity.EstadoEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.EstadoEntity;
 
 public class EstadoMapper {
 

@@ -1,6 +1,6 @@
 package com.escaes.jobsy.infraestructure.jpa;
 
-import com.escaes.jobsy.infraestructure.entity.EstadoEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.EstadoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

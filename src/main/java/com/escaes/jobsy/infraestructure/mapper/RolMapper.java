@@ -1,7 +1,7 @@
 package com.escaes.jobsy.infraestructure.mapper;
 
 import com.escaes.jobsy.domain.model.Rol;
-import com.escaes.jobsy.infraestructure.entity.RolEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.RolEntity;
 
 public class RolMapper {
 

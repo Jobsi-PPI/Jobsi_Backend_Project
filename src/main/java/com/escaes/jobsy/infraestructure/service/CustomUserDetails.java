@@ -1,6 +1,6 @@
 package com.escaes.jobsy.infraestructure.service;
 
-import com.escaes.jobsy.infraestructure.entity.UsuarioEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.UsuarioEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

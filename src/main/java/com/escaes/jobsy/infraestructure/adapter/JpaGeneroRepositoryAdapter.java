@@ -2,7 +2,7 @@ package com.escaes.jobsy.infraestructure.adapter;
 
 import com.escaes.jobsy.domain.model.Genero;
 import com.escaes.jobsy.domain.repository.GeneroRepository;
-import com.escaes.jobsy.infraestructure.entity.GeneroEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.GeneroEntity;
 import com.escaes.jobsy.infraestructure.jpa.SpringDataGeneroRepository;
 import com.escaes.jobsy.infraestructure.mapper.GeneroMapper;
 import org.springframework.stereotype.Repository;

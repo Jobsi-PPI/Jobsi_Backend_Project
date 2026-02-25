@@ -3,7 +3,7 @@ package com.escaes.jobsy.infraestructure.mapper;
 import com.escaes.jobsy.application.dto.genero.GeneroRequest;
 import com.escaes.jobsy.application.dto.genero.GeneroResponse;
 import com.escaes.jobsy.domain.model.Genero;
-import com.escaes.jobsy.infraestructure.entity.GeneroEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.GeneroEntity;
 
 public class GeneroMapper {
 

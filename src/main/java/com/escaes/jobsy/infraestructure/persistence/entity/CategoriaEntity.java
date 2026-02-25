@@ -1,4 +1,4 @@
-package com.escaes.jobsy.infraestructure.entity;
+package com.escaes.jobsy.infraestructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,19 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "ESTADOS")
+@Table(name = "CATEGORIAS")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstadoEntity {
-
+public class CategoriaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Estado_ID",length = 10)
+    @Column(name = "Categoria_ID",length = 10)
     private Long id;
 
-    @Column(name = "Nombre_Estado",length = 50, nullable = false,unique = true)
+    @Column(name = "Nombre_Categoria", nullable = false, length = 100,unique = true)
     private String nombre;
-
 }

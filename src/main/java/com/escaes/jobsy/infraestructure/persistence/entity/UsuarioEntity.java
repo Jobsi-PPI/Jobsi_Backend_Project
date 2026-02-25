@@ -1,4 +1,4 @@
- package com.escaes.jobsy.infraestructure.entity;
+ package com.escaes.jobsy.infraestructure.persistence.entity;
 
  import jakarta.persistence.*;
  import lombok.*;
@@ -15,9 +15,6 @@
  @Builder
  public class UsuarioEntity {
 
-    /*  @Id
-     @Column(name = "Usuario_ID", columnDefinition = "RAW(16)")
-     private UUID id; */
      @Id
      @Column(name = "Documento_Usuario", unique = true, nullable = false, length = 20)
      private Integer documento;
