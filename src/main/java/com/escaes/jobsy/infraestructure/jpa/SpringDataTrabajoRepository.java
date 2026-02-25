@@ -16,4 +16,10 @@ public interface SpringDataTrabajoRepository extends JpaRepository<TrabajoEntity
     List<TrabajoEntity> findByTrabajadorCorreo(String trabajadorCorreo);
 
     Optional<TrabajoEntity> findByDescripcion(String nombre);
+
+    List<TrabajoEntity> findByTrabajadorCorreoAndEstadoNombre(
+            String correoTrabajador,
+            String nombreEstado
+    );
+
 }

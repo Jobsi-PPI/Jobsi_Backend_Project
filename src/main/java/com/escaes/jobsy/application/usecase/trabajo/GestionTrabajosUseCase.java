@@ -7,7 +7,11 @@ import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -91,7 +95,7 @@ public class GestionTrabajosUseCase {
             throw new IllegalArgumentException("No puedes asginarte tu propio trabajo :O ");
         }
 
-        // 🔥 Cambiar el estado a ASIGNADO
+
         Estado estadoAsignado = estadoRepository.findByNombre("ASIGNADO")
                 .orElseThrow(() -> new IllegalArgumentException("Estado 'ASIGNADO' no existe"));
 
@@ -108,12 +112,44 @@ public class GestionTrabajosUseCase {
     }
 
     public void eliminarTrabajoPorIdYUsuarioCorreoSolicitante(UUID id, String solicitanteCorreo) {
-        Trabajo trabajo = trabajoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Trabajo no encontrado con el ID proporcionado"));
+        Trabajo trabajo = obtenerTrabajoPorId(id);
         if (!trabajo.solicitante().correo().equals(solicitanteCorreo)) {
             throw new IllegalArgumentException("No tienes permiso para eliminar este trabajo");
         }
         trabajoRepository.deleteById(id);
+    }
+    public void eliminarAplicacionATrabajoCorreoTrabajador(UUID id, String trabajadorCorreo){
+        Trabajo trabajo = obtenerTrabajoPorId(id);
+
+        Estado estadoPendiente = estadoRepository.findByNombre("PENDIENTE")
+                .orElseThrow(() -> new IllegalArgumentException("Estado 'PENDIENTE' no existe"));
+
+        Optional<Trabajo> job = trabajoRepository
+                .findByTrabajadorCorreoAndEstado(trabajadorCorreo, "ASIGNADO")
+                .stream()
+                .filter(t -> t.id().equals(trabajo.id()))
+                .findFirst();
+
+        if (job.isEmpty()) {
+            throw new BusinessExceptions.NotFoundException(
+                    "No se puede quitar aplicación a trabajo ya que no está en tus trabajos con estado asignado"
+            );
+        }
+        Trabajo trabajoActualizado = new Trabajo(
+                job.get().id(),
+                job.get().titulo(),
+                job.get().descripcion(),
+                job.get().fechaPublicacion(),
+                job.get().pago(),
+                job.get().ubicacion(),
+                job.get().solicitante(),
+                null,
+                job.get().categoria(),
+                estadoPendiente,
+                job.get().tipoPago()
+        );
+
+        trabajoRepository.save(trabajoActualizado);
     }
 
 }
