@@ -3,7 +3,7 @@ package com.escaes.jobsy.infraestructure.mapper;
 import com.escaes.jobsy.application.dto.usuario.UsuarioRequest;
 import com.escaes.jobsy.application.dto.usuario.UsuarioResponse;
 import com.escaes.jobsy.domain.model.Usuario;
-import com.escaes.jobsy.infraestructure.entity.UsuarioEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.UsuarioEntity;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import java.util.List;
 import com.escaes.jobsy.application.dto.trabajo.CrearTrabajoRequest;
 import com.escaes.jobsy.application.dto.trabajo.TrabajoResponse;
 import com.escaes.jobsy.domain.model.Trabajo;
-import com.escaes.jobsy.infraestructure.entity.TrabajoEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.TrabajoEntity;
 
 public class TrabajoMapper {
 

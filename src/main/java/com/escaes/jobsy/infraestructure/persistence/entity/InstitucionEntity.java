@@ -1,4 +1,4 @@
-package com.escaes.jobsy.infraestructure.entity;
+package com.escaes.jobsy.infraestructure.persistence.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
