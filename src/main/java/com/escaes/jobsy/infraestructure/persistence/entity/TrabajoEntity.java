@@ -2,6 +2,7 @@ package com.escaes.jobsy.infraestructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,8 @@ public class TrabajoEntity {
     @Column(name = "Descripcion_Trabajo", nullable = false, length = 500)
     private String descripcion;
 
-    @Column(name = "Fecha_Publicacion_Trabajo", nullable = false)
+    @CreationTimestamp
+    @Column(name = "Fecha_Publicacion_Trabajo", nullable = false, updatable = false)
     private Date fechaPublicacion;
 
     @Column(name = "Pago_Trabajo", nullable = false)
