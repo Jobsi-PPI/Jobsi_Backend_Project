@@ -1,5 +1,6 @@
 package com.escaes.jobsy.infraestructure.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.escaes.jobsy.application.dto.trabajo.CrearTrabajoRequest;
@@ -66,7 +67,8 @@ public class TrabajoMapper {
                 trabajo.estado() != null ? trabajo.estado().nombre() : null,
                 trabajo.categoria() != null ? trabajo.categoria().nombre() : null,
                 trabajo.solicitante() != null ? trabajo.solicitante().correo() : null,
-                trabajo.trabajador() != null ? trabajo.trabajador().correo() : null);
+                trabajo.trabajador() != null ? trabajo.trabajador().correo() : null,
+                trabajo.fechaPublicacion());
     }
 
     public static TrabajoResponse requestToResponse(CrearTrabajoRequest request, String solicitanteCorreo) {
@@ -83,6 +85,7 @@ public class TrabajoMapper {
                 "PENDIENTE",
                 request.categoria(),
                 solicitanteCorreo,
-                null);
+                null,
+                new Date());
     }
 }
