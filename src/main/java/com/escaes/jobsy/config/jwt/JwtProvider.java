@@ -41,6 +41,7 @@ public class JwtProvider {
                 .claim("role", role)
                 .claim("nombre", usuario.nombre())
                 .claim("genero", usuario.genero().nombreGenero())
+                .claim("fechaNacimiento", usuario.fechaNacimiento() != null ? usuario.fechaNacimiento().toString() : null)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 día
                 .signWith(key)
