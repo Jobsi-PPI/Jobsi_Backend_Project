@@ -2,11 +2,12 @@ package com.escaes.jobsy.infraestructure.adapter;
 
 import com.escaes.jobsy.domain.model.Usuario;
 import com.escaes.jobsy.domain.repository.UsuarioRepository;
-import com.escaes.jobsy.infraestructure.entity.UsuarioEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.UsuarioEntity;
 import com.escaes.jobsy.infraestructure.jpa.SpringDataUsuarioRepository;
 import com.escaes.jobsy.infraestructure.mapper.UsuarioMapper;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +85,12 @@ public class JpaUsuarioRepositoryAdapter implements UsuarioRepository {
     }
 
     @Override
-    public List<Usuario> findAllByFechaNacimientoBetween(String fechaInicio, String fechaFin) {
+    public List<Usuario> findAllByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin) {
+        return List.of();
+    }
+
+    @Override
+    public List<Usuario> findUsersCriteria(Integer documento, String correo, String genero, String rol, Boolean bloqueado, Integer valoracionConteo, Double valoracionPromedio, int size, int page) {
         return List.of();
     }
 

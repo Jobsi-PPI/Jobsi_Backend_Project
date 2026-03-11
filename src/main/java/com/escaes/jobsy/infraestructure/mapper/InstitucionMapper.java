@@ -3,7 +3,7 @@ package com.escaes.jobsy.infraestructure.mapper;
 import com.escaes.jobsy.application.dto.institucion.InstitucionRequest;
 import com.escaes.jobsy.application.dto.institucion.InstitucionResponse;
 import com.escaes.jobsy.domain.model.Institucion;
-import com.escaes.jobsy.infraestructure.entity.InstitucionEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.InstitucionEntity;
 
 public class InstitucionMapper {
 

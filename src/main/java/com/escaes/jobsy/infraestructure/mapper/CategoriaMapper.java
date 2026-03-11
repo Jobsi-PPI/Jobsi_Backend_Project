@@ -3,7 +3,7 @@ package com.escaes.jobsy.infraestructure.mapper;
 import com.escaes.jobsy.application.dto.categoria.CategoriaRequest;
 import com.escaes.jobsy.application.dto.categoria.CatergoriaResponse;
 import com.escaes.jobsy.domain.model.Categoria;
-import com.escaes.jobsy.infraestructure.entity.CategoriaEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.CategoriaEntity;
 
 public class CategoriaMapper {
 

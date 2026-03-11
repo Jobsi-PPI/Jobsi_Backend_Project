@@ -95,6 +95,14 @@ public class TrabajoController {
         return ResponseEntity.ok(TrabajoMapper.entityToResponse(takedJob));
     }
 
+    @PatchMapping("/jobs/unassigned-job/{jobId}")
+    public ResponseEntity<Void>eliminarTrabajoAsignado(@PathVariable UUID jobId,Authentication auth){
+        String trabajadorCorreo= auth.getName();
+        gestionTrabajosUseCase.eliminarAplicacionATrabajoCorreoTrabajador(jobId, trabajadorCorreo);
+        LOG.info("Trabajo quita aplicación correo: " + trabajadorCorreo);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/jobs/published/delete/{jobId}")
     public ResponseEntity<Void> eliminarTrabajoPublicado(@PathVariable UUID jobId, Authentication auth) {
         String solicitanteCorreo = auth.getName();

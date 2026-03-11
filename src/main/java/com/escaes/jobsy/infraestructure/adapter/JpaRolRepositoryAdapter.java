@@ -2,7 +2,7 @@ package com.escaes.jobsy.infraestructure.adapter;
 
 import com.escaes.jobsy.domain.model.Rol;
 import com.escaes.jobsy.domain.repository.RolRepository;
-import com.escaes.jobsy.infraestructure.entity.RolEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.RolEntity;
 import com.escaes.jobsy.infraestructure.jpa.SpringDataRolRepository;
 import com.escaes.jobsy.infraestructure.mapper.RolMapper;
 import org.springframework.stereotype.Repository;

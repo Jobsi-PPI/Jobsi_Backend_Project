@@ -1,6 +1,6 @@
 package com.escaes.jobsy.infraestructure.jpa;
 
-import com.escaes.jobsy.infraestructure.entity.InstitucionEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.InstitucionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -59,6 +59,7 @@ public class JpaTrabajoRepositoryAdapter implements TrabajoRepository {
     public List<Trabajo> findByTrabajadorCorreo(String TrabajadorCorreo) {
         return springDataTrabajoRepository.findByTrabajadorCorreo(TrabajadorCorreo).stream().map(TrabajoMapper::toDomain).toList();
     }
+
     /*
         Metodos para encontrar trabajos por estado y categoria (Pendientes)
      */
@@ -98,7 +99,7 @@ public class JpaTrabajoRepositoryAdapter implements TrabajoRepository {
 
     @Override
     public List<Trabajo> findByTrabajadorCorreoAndEstado(String correo, String estado) {
-        return List.of();
+        return springDataTrabajoRepository.findByTrabajadorCorreoAndEstadoNombre(correo, estado).stream().map(TrabajoMapper::toDomain).toList();
     }
 
     @Override

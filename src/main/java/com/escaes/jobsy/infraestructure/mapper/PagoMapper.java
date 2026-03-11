@@ -2,7 +2,7 @@ package com.escaes.jobsy.infraestructure.mapper;
 
 import com.escaes.jobsy.application.dto.pago.PagoResponse;
 import com.escaes.jobsy.domain.model.Pago;
-import com.escaes.jobsy.infraestructure.entity.PagoEntity;
+import com.escaes.jobsy.infraestructure.persistence.entity.PagoEntity;
 
 public class PagoMapper {
 
