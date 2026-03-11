@@ -37,10 +37,10 @@ public class TrabajoController {
         String solicitanteCorreo = authentication.getName();
 
         // Ejecutamos el caso de uso
-        gestionTrabajosUseCase.crearTrabajo(request, solicitanteCorreo);
+        Trabajo trabajoCreado = gestionTrabajosUseCase.crearTrabajo(request, solicitanteCorreo);
         LOG.info("Trabajo creado correctamente para usuario: " + solicitanteCorreo);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(TrabajoMapper.requestToResponse(request, solicitanteCorreo));
+                .body(TrabajoMapper.entityToResponse(trabajoCreado));
     }
 
     @GetMapping("/public/all-jobs")
