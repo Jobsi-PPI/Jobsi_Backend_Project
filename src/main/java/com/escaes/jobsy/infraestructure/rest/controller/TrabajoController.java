@@ -37,10 +37,10 @@ public class TrabajoController {
         String solicitanteCorreo = authentication.getName();
 
         // Ejecutamos el caso de uso
-        gestionTrabajosUseCase.crearTrabajo(request, solicitanteCorreo);
+        Trabajo trabajoCreado = gestionTrabajosUseCase.crearTrabajo(request, solicitanteCorreo);
         LOG.info("Trabajo creado correctamente para usuario: " + solicitanteCorreo);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(TrabajoMapper.requestToResponse(request, solicitanteCorreo));
+                .body(TrabajoMapper.entityToResponse(trabajoCreado));
     }
 
     @GetMapping("/public/all-jobs")
@@ -112,4 +112,20 @@ public class TrabajoController {
         LOG.info("Trabajo eliminado id: " + jobId + " solicitante correo: " + solicitanteCorreo);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/jobs/abandon/{jobId}")
+    public ResponseEntity<Void> abandonarTrabajo(@PathVariable UUID jobId, Authentication auth) {
+        String trabajadorCorreo = auth.getName();
+
+        //Ejecutamos el caso de uso
+        gestionTrabajosUseCase.abandonarTrabajoPorIdYUsuarioCorreoTrabajador(jobId, trabajadorCorreo);
+        LOG.info("Trabajo abandonado. JobId: " + jobId + ", trabajador: " + trabajadorCorreo);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
 }
+
+
+

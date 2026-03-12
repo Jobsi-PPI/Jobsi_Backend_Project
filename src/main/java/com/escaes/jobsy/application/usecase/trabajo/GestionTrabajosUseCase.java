@@ -152,4 +152,38 @@ public class GestionTrabajosUseCase {
         trabajoRepository.save(trabajoActualizado);
     }
 
+    public void abandonarTrabajoPorIdYUsuarioCorreoTrabajador(UUID jobId, String correoTrabajador) {
+        Trabajo trabajo = trabajoRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Trabajo no encontrado"));
+
+        if (trabajo.trabajador() == null) {
+            throw new RuntimeException("El trabajo no tiene trabajador asignado");
+        }
+
+        if (!trabajo.trabajador().correo().equals(correoTrabajador)) {
+            throw new RuntimeException("No puedes abandonar un trabajo que no te pertenece");
+        }
+
+        // Se cambia el estado a PENDIENTE
+        Estado estadoPendiente = estadoRepository.findByNombre("PENDIENTE")
+                .orElseThrow(() -> new IllegalArgumentException("Estado 'PENDIENTE' no existe"));
+
+        Trabajo updated = new Trabajo(
+                trabajo.id(),
+                trabajo.titulo(),
+                trabajo.descripcion(),
+                trabajo.fechaPublicacion(),
+                trabajo.pago(),
+                trabajo.ubicacion(),
+                trabajo.solicitante(),
+                null,        // quitar trabajador
+                trabajo.categoria(),
+                estadoPendiente,      // volver a pendiente
+                trabajo.tipoPago()
+        );
+
+        trabajoRepository.save(updated);
+    }
+
+
 }
