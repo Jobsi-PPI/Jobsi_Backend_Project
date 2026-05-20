@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -110,5 +111,14 @@ public class UsuarioController {
                 .map(UsuarioMapper::entityToResponse)
                 .toList();
         return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/usuarios/perfil")
+    public ResponseEntity<UsuarioResponse> obtenerPerfil(Authentication authentication) {
+        String correo = authentication.getName();
+        Usuario usuario = listarUsuariosUseCase
+                .buscarUsuarios(null, correo, null, null, null, null, null, 1, 0)
+                .stream().findFirst().orElseThrow();
+        return ResponseEntity.ok(UsuarioMapper.entityToResponse(usuario));
     }
 }
