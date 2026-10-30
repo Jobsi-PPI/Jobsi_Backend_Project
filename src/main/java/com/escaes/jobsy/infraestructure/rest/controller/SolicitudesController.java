@@ -1,5 +1,6 @@
 package com.escaes.jobsy.infraestructure.rest.controller;
 
+import com.escaes.jobsy.application.dto.solicitud.SolicitudAdminResponse;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudRequest;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudResponse;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudUsuarioResponse;
@@ -88,4 +89,16 @@ public class SolicitudesController {
         return ResponseEntity.ok(listarSolicitudesUseCase.listarSolicitudesPorUsuario(trabajadorCorreo));
     }
 
+    @Operation(summary = "Listar todas las postulaciones (moderación)", description = "Devuelve todas las postulaciones del sistema. Requiere rol ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Listado de postulaciones",
+                content = @Content(schema = @Schema(implementation = SolicitudAdminResponse.class))),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @GetMapping("/admin/requests")
+    public ResponseEntity<List<SolicitudAdminResponse>> listarSolicitudesAdmin() {
+        return ResponseEntity.ok(listarSolicitudesUseCase.listarSolicitudesAdmin());
+    }
 }

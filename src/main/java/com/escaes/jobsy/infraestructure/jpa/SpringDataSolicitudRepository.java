@@ -40,9 +40,27 @@ public interface SpringDataSolicitudRepository extends JpaRepository<SolicitudEn
 
     boolean existsByUsuarioCorreoAndTrabajoId(String correo, UUID trabajoId);
 
-    List<SolicitudEntity> findByUsuarioDocumento(Integer documento);
+    List<SolicitudEntity> findByUsuarioDocumento(Long documento);
 
     List<SolicitudEntity> findByTrabajoId(UUID trabajoId);
+
+    @Modifying
+    @Query("""
+                UPDATE SolicitudEntity s
+                SET s.estado = com.escaes.jobsy.infraestructure.persistence.enums.EstadoSolicitud.CERRADA
+                WHERE s.trabajo.id = :trabajoId
+                AND s.estado = com.escaes.jobsy.infraestructure.persistence.enums.EstadoSolicitud.PENDIENTE
+            """)
+    void cerrarSolicitudesPendientes(@Param("trabajoId") UUID trabajoId);
+
+    @Modifying
+    @Query("DELETE FROM SolicitudEntity s WHERE s.trabajo.id = :trabajoId")
+    void eliminarPorTrabajo(@Param("trabajoId") UUID trabajoId);
+
+    @Query("SELECT s.estado, COUNT(s) FROM SolicitudEntity s GROUP BY s.estado")
+    List<Object[]> contarPorEstado();
+
+    long countByUsuarioDocumento(Long documento);
 
 
 }

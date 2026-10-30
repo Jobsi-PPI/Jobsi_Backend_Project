@@ -227,7 +227,55 @@ public class TrabajoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Listar trabajos (moderación)", description = "Búsqueda de trabajos para moderación con los mismos filtros que la búsqueda pública. Requiere rol ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Listado de trabajos",
+                content = @Content(schema = @Schema(implementation = TrabajoResponse.class))),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @GetMapping("/admin/jobs")
+    public ResponseEntity<List<TrabajoResponse>> listarTrabajosAdmin(
+            @Parameter(description = "Filtrar por título (búsqueda parcial)") @RequestParam(required = false) String titulo,
+            @Parameter(description = "Filtrar por categoría") @RequestParam(required = false) String categoria,
+            @Parameter(description = "Filtrar por estado", example = "PENDIENTE") @RequestParam(required = false) String estado,
+            @Parameter(description = "Correo del solicitante") @RequestParam(required = false) String solicitanteCorreo,
+            @Parameter(description = "Cantidad de resultados por página", example = "20") @RequestParam(defaultValue = "20") int size,
+            @Parameter(description = "Número de página (base 0)", example = "0") @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(listarTrabajosUseCase.buscarTrabajos(
+                        titulo, categoria, estado, null, null, null, null, solicitanteCorreo, size, page)
+                .stream().map(TrabajoMapper::entityToResponse).toList());
+    }
+
+    @Operation(summary = "Cancelar trabajo (moderación)", description = "Pasa el trabajo a CANCELADO y cierra sus postulaciones pendientes. Requiere rol ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Trabajo cancelado",
+                content = @Content(schema = @Schema(implementation = TrabajoResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Trabajo no encontrado", content = @Content),
+        @ApiResponse(responseCode = "409", description = "El trabajo ya estaba finalizado o cancelado", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @PatchMapping("/admin/jobs/{jobId}/cancel")
+    public ResponseEntity<TrabajoResponse> cancelarTrabajoAdmin(
+            @Parameter(description = "UUID del trabajo") @PathVariable UUID jobId) {
+        return ResponseEntity.ok(TrabajoMapper.entityToResponse(gestionTrabajosUseCase.cancelarTrabajoAdmin(jobId)));
+    }
+
+    @Operation(summary = "Eliminar trabajo (moderación)", description = "Elimina cualquier trabajo junto con sus postulaciones y valoraciones. Requiere rol ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Trabajo eliminado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Trabajo no encontrado", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @DeleteMapping("/admin/jobs/{jobId}")
+    public ResponseEntity<Void> eliminarTrabajoAdmin(
+            @Parameter(description = "UUID del trabajo") @PathVariable UUID jobId) {
+        gestionTrabajosUseCase.eliminarTrabajoAdmin(jobId);
+        return ResponseEntity.noContent().build();
+    }
 }
-
-
-

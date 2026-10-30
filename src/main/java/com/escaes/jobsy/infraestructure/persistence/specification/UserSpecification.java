@@ -5,7 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class UserSpecification {
 
-    public static Specification<UsuarioEntity> hasDocument(Integer document) {
+    public static Specification<UsuarioEntity> hasDocument(Long document) {
         return (root, query, cb) -> {
             if (document == null) {
                 return cb.conjunction();

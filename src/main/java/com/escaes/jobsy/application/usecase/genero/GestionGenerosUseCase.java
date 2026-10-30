@@ -4,6 +4,7 @@ import com.escaes.jobsy.application.dto.genero.GeneroRequest;
 import com.escaes.jobsy.domain.model.Genero;
 import com.escaes.jobsy.domain.repository.GeneroRepository;
 
+import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -35,6 +36,22 @@ public class GestionGenerosUseCase {
     public Genero obtenerGeneroPorNombre(String nombre) {
         return generoRepository.findByNombre(nombre)
                 .orElseThrow(() -> new IllegalArgumentException("Género no encontrado con el nombre proporcionado"));
+    }
+
+    public Genero actualizarGenero(String nombre, String nuevoNombre) {
+        Genero genero = generoRepository.findByNombre(nombre)
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Género no encontrado: " + nombre));
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            throw new BusinessExceptions.BadRequestException("El nuevo nombre no puede ser vacío");
+        }
+        generoRepository.findByNombre(nuevoNombre)
+                .filter(existente -> !existente.id().equals(genero.id()))
+                .ifPresent(existente -> {
+                    throw new BusinessExceptions.ConflictException("Ya existe un género con nombre: " + nuevoNombre);
+                });
+        Genero actualizado = new Genero(genero.id(), nuevoNombre);
+        generoRepository.save(actualizado);
+        return actualizado;
     }
 
     public void eliminarGeneroPorId(Long id) {

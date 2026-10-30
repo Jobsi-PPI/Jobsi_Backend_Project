@@ -1,5 +1,6 @@
 package com.escaes.jobsy.application.usecase.solicitud;
 
+import com.escaes.jobsy.application.dto.solicitud.SolicitudAdminResponse;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudResponse;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudUsuarioResponse;
 import com.escaes.jobsy.application.usecase.usuario.GestionUsuariosUseCase;
@@ -31,6 +32,16 @@ public class ListarSolicitudesUseCase {
                 .stream()
                 .map(SolicitudMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    /*
+     * Listado para el panel de administración, sin exponer datos sensibles del postulante.
+     */
+    public List<SolicitudAdminResponse> listarSolicitudesAdmin(){
+        return solicitudRepository.findAll()
+                .stream()
+                .map(SolicitudMapper::toAdminResponse)
+                .toList();
     }
 
     public List<SolicitudUsuarioResponse> listarSolicitudes(UUID trabajoId, String correoSolicitante){

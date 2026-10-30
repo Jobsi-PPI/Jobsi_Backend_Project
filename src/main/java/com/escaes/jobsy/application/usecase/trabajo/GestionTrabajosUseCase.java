@@ -322,4 +322,46 @@ public class GestionTrabajosUseCase {
         return trabajoFinalizado;
     }
 
+    /*
+     * Moderación (ADMIN): cancela un trabajo activo y cierra sus postulaciones pendientes.
+     */
+    @Transactional
+    public Trabajo cancelarTrabajoAdmin(UUID jobId) {
+        Trabajo trabajo = trabajoRepository.findById(jobId)
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Trabajo no encontrado"));
+        String estadoActual = trabajo.estado().nombre();
+        if ("FINALIZADO".equals(estadoActual) || "CANCELADO".equals(estadoActual)) {
+            throw new BusinessExceptions.ConflictException("El trabajo ya está " + estadoActual.toLowerCase());
+        }
+        Estado estadoCancelado = estadoRepository.findByNombre("CANCELADO")
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Estado 'CANCELADO' no existe"));
+        Trabajo cancelado = new Trabajo(
+                trabajo.id(),
+                trabajo.titulo(),
+                trabajo.descripcion(),
+                trabajo.fechaPublicacion(),
+                trabajo.pago(),
+                trabajo.ubicacion(),
+                trabajo.solicitante(),
+                trabajo.trabajador(),
+                trabajo.categoria(),
+                estadoCancelado,
+                trabajo.tipoPago());
+        trabajoRepository.save(cancelado);
+        solicitudRepository.cerrarSolicitudesPendientes(jobId);
+        return cancelado;
+    }
+
+    /*
+     * Moderación (ADMIN): elimina cualquier trabajo junto con sus postulaciones.
+     * Las valoraciones se eliminan en cascada desde la entidad del trabajo.
+     */
+    @Transactional
+    public void eliminarTrabajoAdmin(UUID jobId) {
+        trabajoRepository.findById(jobId)
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Trabajo no encontrado"));
+        solicitudRepository.deleteByTrabajoId(jobId);
+        trabajoRepository.deleteById(jobId);
+    }
+
 }

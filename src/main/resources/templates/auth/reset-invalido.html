@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Enlace no válido')}"></head>
+<body>
+<main class="tarjeta">
+    <div th:replace="~{fragments/base :: marca}"></div>
+    <h1>Enlace no válido o expirado</h1>
+    <p>Este enlace ya se usó o caducó. Solicita uno nuevo para restablecer tu contraseña.</p>
+    <a class="boton" th:href="@{/auth/password/forgot}">Solicitar un nuevo enlace</a>
+    <a class="enlace" th:href="${loginUrl}">Volver a iniciar sesión</a>
+</main>
+</body>
+</html>

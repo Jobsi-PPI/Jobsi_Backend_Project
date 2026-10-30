@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recupera tu contraseña</title>
+</head>
+<!-- Estilos en línea: la mayoría de clientes de correo ignoran las hojas de estilo -->
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:24px 0;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;">
+                <tr>
+                    <td style="background:#1e3a8a;padding:24px 32px;">
+                        <span style="color:#ffffff;font-size:24px;font-weight:bold;">Jobsi</span>
+                        <div style="width:56px;height:5px;background:#ffb906;margin-top:8px;border-radius:3px;"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:32px;color:#111827;font-size:16px;line-height:1.5;">
+                        <p style="margin:0 0 16px;">Hola <strong th:text="${nombre}">usuario</strong>,</p>
+                        <p style="margin:0 0 24px;">Recibimos una solicitud para restablecer la contraseña de tu cuenta.
+                            Haz clic en el botón para crear una nueva.</p>
+                        <p style="margin:0 0 24px;text-align:center;">
+                            <a th:href="${enlace}" href="#"
+                               style="display:inline-block;background:#1e3a8a;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:bold;">
+                                Restablecer contraseña</a>
+                        </p>
+                        <p style="margin:0 0 16px;color:#4b5563;font-size:14px;"
+                           th:text="'El enlace vence en ' + ${minutos} + ' minutos y solo se puede usar una vez.'">
+                            El enlace vence en 30 minutos y solo se puede usar una vez.</p>
+                        <p style="margin:0 0 16px;color:#4b5563;font-size:14px;">Si no solicitaste este cambio, ignora
+                            este correo: tu contraseña seguirá siendo la misma.</p>
+                        <p style="margin:0;color:#6b7280;font-size:12px;word-break:break-all;">Si el botón no funciona,
+                            copia este enlace en tu navegador:<br><span th:text="${enlace}">enlace</span></p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

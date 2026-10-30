@@ -1,5 +1,6 @@
 package com.escaes.jobsy.config.jwt;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,18 +36,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            Claims claims = jwtProvider.validateToken(token);
+            try {
+                Claims claims = jwtProvider.validateToken(token);
 
-            String username = claims.getSubject();
+                String username = claims.getSubject();
 
-            String role = claims.get("role", String.class);
+                String role = claims.get("role", String.class);
 
-            GrantedAuthority authority = new SimpleGrantedAuthority(role);
+                GrantedAuthority authority = new SimpleGrantedAuthority(role);
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(username, null, List.of(authority));
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(username, null, List.of(authority));
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (JwtException | IllegalArgumentException ex) {
+                // Token inválido o expirado: se continúa sin autenticación y el entry point responde 401
+                SecurityContextHolder.clearContext();
+            }
         }
 
         filterChain.doFilter(request, response);

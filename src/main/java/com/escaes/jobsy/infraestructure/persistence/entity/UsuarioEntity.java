@@ -17,7 +17,7 @@
 
      @Id
      @Column(name = "Documento_Usuario", unique = true, nullable = false, length = 20)
-     private Integer documento;
+     private Long documento;
 
      @Column(name = "Nombre_Usuario", nullable = false, length = 100)
      private String nombre;
@@ -31,7 +31,7 @@
      @Column(name = "Correo_Usuario", unique = true, nullable = false, length = 100)
      private String correo;
 
-     @Column(name = "Contraseña_Usuario", nullable = false, length = 255)
+     @Column(name = "Clave_Usuario", nullable = false, length = 255)
      private String clave;
 
      @Column(name = "Telefono_Usuario", nullable = false,unique = true, length = 20)
@@ -39,7 +39,7 @@
 
      @Column(name = "Bloqueado", nullable = false)
      @Builder.Default
-     private final Boolean bloqueado = false;
+     private Boolean bloqueado = false;
 
      @Column(name = "Fecha_Nacimiento_Usuario", nullable = false)
      private Date fechaNacimiento;

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Contraseña actualizada')}"></head>
+<body>
+<main class="tarjeta">
+    <div th:replace="~{fragments/base :: marca}"></div>
+    <h1>¡Listo! Tu contraseña se actualizó</h1>
+    <p>Ya puedes iniciar sesión con tu nueva contraseña.</p>
+    <a class="boton" th:href="${loginUrl}">Iniciar sesión</a>
+</main>
+</body>
+</html>

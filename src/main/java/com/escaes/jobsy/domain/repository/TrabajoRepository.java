@@ -3,6 +3,7 @@ package com.escaes.jobsy.domain.repository;
 import com.escaes.jobsy.domain.model.Trabajo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,6 +39,17 @@ public interface TrabajoRepository {
      * Búsqueda dinámica de trabajos: cualquier combinación de filtros opcionales,
      * con paginación. Implementada con la JPA Criteria API.
      */
+    /*
+     * Conteos para el dashboard de administración
+     */
+    long count();
+
+    Map<String, Long> contarPorEstado();
+
+    Map<String, Long> contarPorCategoria();
+
+    long contarPorUsuario(Long documento);
+
     List<Trabajo> buscarTrabajosCriteria(String titulo, String categoria, String estado,
             String ubicacion, String tipoPago, Double pagoMin, Double pagoMax,
             String solicitanteCorreo, int size, int page);

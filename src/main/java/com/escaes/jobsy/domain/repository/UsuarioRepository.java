@@ -1,5 +1,6 @@
 package com.escaes.jobsy.domain.repository;
 
+import com.escaes.jobsy.domain.model.Pagina;
 import com.escaes.jobsy.domain.model.Usuario;
 
 import java.time.LocalDate;
@@ -10,13 +11,13 @@ public interface UsuarioRepository {
 
     void save(Usuario usuario);
 
-    Optional<Usuario> findById(Integer id);
+    Optional<Usuario> findById(Long id);
 
     Optional<Usuario> findByCorreo(String correo);
 
     Optional<Usuario> findByTelefono(String telefono);
 
-    Optional<Usuario> findByDocumentoOrCorreoOrTelefono(Integer documento, String correo, String telefono);
+    Optional<Usuario> findByDocumentoOrCorreoOrTelefono(Long documento, String correo, String telefono);
 
     Usuario findByCorreoAndClave(String correo, String clave);
 
@@ -34,9 +35,15 @@ public interface UsuarioRepository {
 
     List<Usuario> findAllByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
-    List<Usuario> findUsersCriteria(Integer documento, String correo, String genero, String rol, Boolean bloqueado, Integer valoracionConteo, Double valoracionPromedio, int size, int page);
+    Pagina<Usuario> findUsersCriteria(Long documento, String correo, String genero, String rol, Boolean bloqueado, Integer valoracionConteo, Double valoracionPromedio, int size, int page);
 
-    void deleteById(Integer id);
+    long count();
+
+    long countByBloqueado(Boolean bloqueado);
+
+    boolean existsByRol(String rol);
+
+    void deleteById(Long id);
 
     void deleteByCorreo(String correo);
 
