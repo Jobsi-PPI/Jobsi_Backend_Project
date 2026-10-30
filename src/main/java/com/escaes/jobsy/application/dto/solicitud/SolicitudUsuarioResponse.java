@@ -10,5 +10,6 @@ public record SolicitudUsuarioResponse(UUID solicitudId,
                                        String correoUsuario,
                                        String telefonoUsuario,
                                        EstadoSolicitud estado,
-                                       LocalDateTime fechaSolicitud) {
+                                       LocalDateTime fechaSolicitud,
+                                       Double valoracionPromedio) {
 }

@@ -93,6 +93,21 @@ class AuthControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void perfilDevuelveExactamenteAlUsuarioDelToken() throws Exception {
+        // "juana@" contiene "ana@": una búsqueda con LIKE devolvería el usuario equivocado
+        registrarUsuario(100000005, "juana@jobsi.test", "Clave12345", "3100000005");
+        registrarUsuario(100000006, "ana@jobsi.test", "Clave12345", "3100000006");
+
+        mockMvc.perform(get("/v1/usuarios/perfil").header("Authorization", bearer(login("ana@jobsi.test", "Clave12345"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("ana@jobsi.test"))
+                .andExpect(jsonPath("$.documento").value(100000006))
+                .andExpect(jsonPath("$.valoracionPromedio").value(0.0));
+
+        mockMvc.perform(get("/v1/usuarios/perfil")).andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void tokenInvalidoDevuelve401() throws Exception {
         mockMvc.perform(get("/v1/admin/metrics").header("Authorization", "Bearer token.invalido.x"))
                 .andExpect(status().isUnauthorized());

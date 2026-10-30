@@ -200,4 +200,18 @@ public class UsuarioController {
         gestionUsuariosUseCase.eliminarUsuarioAdmin(documento, authentication.getName());
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Perfil del usuario autenticado", description = "Devuelve los datos del usuario dueño del token, incluida su valoración promedio.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Perfil del usuario",
+                content = @Content(schema = @Schema(implementation = UsuarioResponse.class))),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content)
+    })
+    @GetMapping("/usuarios/perfil")
+    public ResponseEntity<UsuarioResponse> obtenerPerfil(Authentication authentication) {
+        // Búsqueda exacta por correo: la búsqueda con filtros usa LIKE y podría devolver otro usuario
+        Usuario usuario = gestionUsuariosUseCase.obtenerUsuarioPorCorreo(authentication.getName());
+        return ResponseEntity.ok(UsuarioMapper.entityToResponse(usuario));
+    }
 }

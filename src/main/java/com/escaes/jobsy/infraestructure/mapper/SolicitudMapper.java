@@ -73,7 +73,8 @@ public class SolicitudMapper {
                 solicitud.trabajador().correo(),
                 solicitud.trabajador().telefono(),
                 solicitud.estado(),
-                solicitud.fechaCreacion()
+                solicitud.fechaCreacion(),
+                solicitud.trabajador().valoracionPromedio()
         );
     }
 }
