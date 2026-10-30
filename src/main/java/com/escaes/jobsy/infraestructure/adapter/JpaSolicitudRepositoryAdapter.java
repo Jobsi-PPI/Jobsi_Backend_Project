@@ -10,7 +10,9 @@ import com.escaes.jobsy.infraestructure.persistence.enums.EstadoSolicitud;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -89,5 +91,36 @@ public class JpaSolicitudRepositoryAdapter implements SolicitudRepository {
     @Override
     public void rechazarOtrasSolicitudes(UUID trabajoId, UUID solicitudId) {
         springDataSolicitudRepository.rechazarOtrasSolicitudes(trabajoId, solicitudId);
+    }
+
+    @Override
+    public void cerrarSolicitudesPendientes(UUID trabajoId) {
+        springDataSolicitudRepository.cerrarSolicitudesPendientes(trabajoId);
+    }
+
+    @Override
+    public void deleteByTrabajoId(UUID trabajoId) {
+        springDataSolicitudRepository.eliminarPorTrabajo(trabajoId);
+    }
+
+    @Override
+    public long count() {
+        return springDataSolicitudRepository.count();
+    }
+
+    @Override
+    public Map<EstadoSolicitud, Long> contarPorEstado() {
+        Map<EstadoSolicitud, Long> resultado = new EnumMap<>(EstadoSolicitud.class);
+        for (Object[] fila : springDataSolicitudRepository.contarPorEstado()) {
+            if (fila[0] != null) {
+                resultado.put((EstadoSolicitud) fila[0], (Long) fila[1]);
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public long contarPorUsuario(Long documento) {
+        return springDataSolicitudRepository.countByUsuarioDocumento(documento);
     }
 }

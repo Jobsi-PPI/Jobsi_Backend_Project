@@ -10,7 +10,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -42,22 +41,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable).headers((httpSecurityHeadersConfigurer -> {
-                    httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
-                }))
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Login y páginas Thymeleaf de recuperación de contraseña
                         .requestMatchers("/auth/**").permitAll()
-                        // .requestMatchers("/v1/users/create").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/webjars/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/v1/public/**").permitAll()
+                        // Health check público (el detalle solo lo ve un ADMIN)
+                        .requestMatchers("/health", "/health/**", "/info").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/v1/jobs/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/v1/gender/**").hasRole("ADMIN")
                         .requestMatchers("/v1/ubication/**").hasRole("ADMIN")
                         .requestMatchers("/v1/lookups/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/v1/requests/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/internal/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling(ex -> ex
                         // cuando no hay autenticación (JWT inválido, expirado, ausente)

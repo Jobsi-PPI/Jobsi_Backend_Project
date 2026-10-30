@@ -44,8 +44,8 @@ public class UsuarioMapper {
                 usuarioEntity.getPrimerApellido(),
                 usuarioEntity.getSegundoApellido(),
                 usuarioEntity.getCorreo(),
-                usuarioEntity.getTelefono(),
                 usuarioEntity.getClave(),
+                usuarioEntity.getTelefono(),
                 usuarioEntity.getBloqueado(),
                 usuarioEntity.getFechaNacimiento(),
                 usuarioEntity.getValoracionConteo(),
@@ -90,7 +90,10 @@ public class UsuarioMapper {
                 usuario.correo(),
                 usuario.rol().nombre(),
                 usuario.valoracionConteo(),
-                usuario.valoracionPromedio()
+                usuario.valoracionPromedio(),
+                usuario.telefono(),
+                usuario.genero() != null ? usuario.genero().nombreGenero() : null,
+                usuario.bloqueado()
         );
     }
 
@@ -105,8 +108,11 @@ public class UsuarioMapper {
                 request.primerApellido(),
                 request.segundoApellido(),
                 request.email(),
-                request.rol() != null ? request.rol() : "USER",
+                "USER",
                 null,
+                null,
+                request.telefono(),
+                request.genero(),
                 null
         );
     }

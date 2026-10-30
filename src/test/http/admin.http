@@ -1,73 +1,215 @@
 ###Endpoints para rol ADMIN (requiere JWT con rol = ROLE_ADMIN)
+# 1. Ejecuta el login y copia el token en la variable @token.
+# En dev el admin es admin@jobsi.local / Admin12345 (o ADMIN_EMAIL / ADMIN_PASSWORD).
+@token =
 
-# Permite a un administrador consultar la información de un usuario
-# a partir de su documento de identificación.
-# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
-GET http://localhost:8080/v1/admin/users/2
-Accept: application/json
-Authorization: Bearer
-
-###Crear usuario como administrador, incluye rol
-POST http://localhost:8080/v1/public/users/create
+### Login como administrador
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "documento": 2,
-  "nombre": "Carlos Ramírez",
-  "email": "user@gmail.com",
-  "password": "123",
-  "fechaNacimiento": "1990-01-01",
-  "genero": "Alien",
+  "email": "admin@jobsi.local",
+  "password": "Admin12345"
+}
+
+### Health check (publico; con token ADMIN muestra el detalle)
+GET http://localhost:8080/health
+Authorization: Bearer {{token}}
+
+### ---------------- METRICAS ----------------
+
+### Metricas del dashboard
+GET http://localhost:8080/v1/admin/metrics
+Authorization: Bearer {{token}}
+
+### ---------------- USUARIOS ----------------
+
+### Listado paginado (filtros opcionales: documento, correo, rol, bloqueado)
+GET http://localhost:8080/v1/admin/users?page=0&size=10&bloqueado=false
+Authorization: Bearer {{token}}
+
+### Consultar un usuario por documento
+GET http://localhost:8080/v1/admin/users/2
+Authorization: Bearer {{token}}
+
+### Buscar usuarios (lista sin datos de paginacion)
+GET http://localhost:8080/v1/admin/users/search?rol=USER
+Authorization: Bearer {{token}}
+
+### Bloquear usuario
+PATCH http://localhost:8080/v1/admin/users/2/block
+Authorization: Bearer {{token}}
+
+### Desbloquear usuario
+PATCH http://localhost:8080/v1/admin/users/2/unblock
+Authorization: Bearer {{token}}
+
+### Cambiar rol (USER / ADMIN)
+PATCH http://localhost:8080/v1/admin/users/2/role
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
   "rol": "ADMIN"
 }
 
+### Eliminar usuario (solo si no tiene trabajos ni postulaciones; si no, 409)
+DELETE http://localhost:8080/v1/admin/users/2
+Authorization: Bearer {{token}}
 
-###Obtener todas las categorias registradas
+### Roles disponibles
+GET http://localhost:8080/v1/admin/roles
+Authorization: Bearer {{token}}
+
+### ---------------- CATEGORIAS ----------------
+
 GET http://localhost:8080/v1/admin/category-all
-Accept: application/json
-Authorization: Bearer
+Authorization: Bearer {{token}}
 
-
-###Obtener categoria por nombre
+###
 GET http://localhost:8080/v1/admin/category/tareas
-Accept: application/json
-Authorization: Bearer
+Authorization: Bearer {{token}}
 
-
-
-###Crear categoria
+###
 POST http://localhost:8080/v1/admin/category/create
 Content-Type: application/json
-Authorization: Bearer
+Authorization: Bearer {{token}}
 
 {
     "nombre": "Categoria Prueba"
 }
 
-###Crear ubicacion
+###
+PUT http://localhost:8080/v1/admin/category/Categoria Prueba
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Categoria Renombrada"
+}
+
+### Eliminar (409 si hay trabajos con esa categoria)
+DELETE http://localhost:8080/v1/admin/category/Categoria Renombrada
+Authorization: Bearer {{token}}
+
+### ---------------- ESTADOS ----------------
+
+GET http://localhost:8080/v1/admin/state-all
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:8080/v1/admin/create/state
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "EN_REVISION"
+}
+
+### PENDIENTE, ASIGNADO, FINALIZADO y CANCELADO estan protegidos (409)
+PUT http://localhost:8080/v1/admin/state/EN_REVISION
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "REVISION"
+}
+
+###
+DELETE http://localhost:8080/v1/admin/state/REVISION
+Authorization: Bearer {{token}}
+
+### ---------------- GENEROS ----------------
+
+GET http://localhost:8080/v1/admin/gender-all
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:8080/v1/admin/gender/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "No binario"
+}
+
+###
+PUT http://localhost:8080/v1/admin/gender/No binario
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "No binarie"
+}
+
+### 409 si hay usuarios con ese genero
+DELETE http://localhost:8080/v1/admin/gender/No binarie
+Authorization: Bearer {{token}}
+
+### ---------------- TIPOS DE PAGO ----------------
+
+GET http://localhost:8080/v1/admin/payment-all
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:8080/v1/admin/payment/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "NEQUI"
+}
+
+###
+PUT http://localhost:8080/v1/admin/payment/NEQUI
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "DAVIPLATA"
+}
+
+###
+DELETE http://localhost:8080/v1/admin/payment/DAVIPLATA
+Authorization: Bearer {{token}}
+
+### ---------------- CATEGORIAS DE VALORACION ----------------
+
+GET http://localhost:8080/v1/admin/rating-category-all
+Authorization: Bearer {{token}}
+
+### Ojo: finalizar un trabajo exige una puntuacion por cada categoria
+POST http://localhost:8080/v1/admin/rating-category/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Amabilidad"
+}
+
+### ---------------- UBICACIONES ----------------
+
 POST http://localhost:8080/v1/ubication
 Content-Type: application/json
-Authorization: Bearer
+Authorization: Bearer {{token}}
 
 {
   "nombre": "Biblioteca"
 }
 
-###Obtener todas las ubicaciones registradas
+###
 GET http://localhost:8080/v1/ubication
-Accept: application/json
-Authorization: Bearer
+Authorization: Bearer {{token}}
 
-
-### Eliminar una ubicacaion por nombre
+###
 DELETE http://localhost:8080/v1/ubication/Biblioteca
-Authorization: Bearer
+Authorization: Bearer {{token}}
 
+### ---------------- INSTITUCIONES ----------------
 
-###Crear Institucion
 POST http://localhost:8080/v1/admin/create-institution
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{token}}
 
 {
   "nombre": "institucion prueba",
@@ -75,3 +217,24 @@ Authorization: Bearer
   "municipioCodigo": "MED"
 }
 
+### Eliminar por id (ver GET /v1/public/institutions-all)
+DELETE http://localhost:8080/v1/admin/institution/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### ---------------- MODERACION ----------------
+
+### Trabajos (filtros: titulo, categoria, estado, solicitanteCorreo, page, size)
+GET http://localhost:8080/v1/admin/jobs?estado=PENDIENTE
+Authorization: Bearer {{token}}
+
+### Cancelar trabajo (cierra sus postulaciones pendientes)
+PATCH http://localhost:8080/v1/admin/jobs/00000000-0000-0000-0000-000000000000/cancel
+Authorization: Bearer {{token}}
+
+### Eliminar trabajo con sus postulaciones y valoraciones
+DELETE http://localhost:8080/v1/admin/jobs/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Todas las postulaciones
+GET http://localhost:8080/v1/admin/requests
+Authorization: Bearer {{token}}

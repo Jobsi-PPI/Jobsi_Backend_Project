@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .withUsername(usuario.correo())
                 .password(usuario.clave())
                 .roles(usuario.rol().nombre())
+                .disabled(Boolean.TRUE.equals(usuario.bloqueado()))
                 .build();
     }
 }

@@ -11,21 +11,25 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SpringDataUsuarioRepository
-        extends JpaRepository<UsuarioEntity, Integer>, JpaSpecificationExecutor<UsuarioEntity> {
+        extends JpaRepository<UsuarioEntity, Long>, JpaSpecificationExecutor<UsuarioEntity> {
 
-    Optional<UsuarioEntity> findByDocumentoOrCorreoOrTelefono(Integer documento, String correo, String telefono);
+    Optional<UsuarioEntity> findByDocumentoOrCorreoOrTelefono(Long documento, String correo, String telefono);
 
     Optional<UsuarioEntity> findByCorreo(String correo);
 
     Optional<UsuarioEntity> findByTelefono(String telefono);
 
-    boolean existsByDocumento(Integer documento);
+    boolean existsByDocumento(Long documento);
 
     boolean existsByCorreoIgnoreCase(String correo);
 
     boolean existsByTelefono(String telefono);
 
     List<UsuarioEntity>findAllByBloqueado(Boolean bloqueado);
+
+    long countByBloqueado(Boolean bloqueado);
+
+    boolean existsByRolNombre(String nombre);
 
     List<UsuarioEntity>findAllByGenero(GeneroEntity genero);
 

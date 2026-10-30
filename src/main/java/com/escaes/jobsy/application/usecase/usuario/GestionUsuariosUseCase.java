@@ -4,6 +4,9 @@ import com.escaes.jobsy.application.dto.usuario.UsuarioRequest;
 import com.escaes.jobsy.domain.model.Genero;
 import com.escaes.jobsy.domain.model.Rol;
 import com.escaes.jobsy.domain.model.Usuario;
+import com.escaes.jobsy.domain.repository.RolRepository;
+import com.escaes.jobsy.domain.repository.SolicitudRepository;
+import com.escaes.jobsy.domain.repository.TrabajoRepository;
 import com.escaes.jobsy.domain.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,9 +24,22 @@ public class GestionUsuariosUseCase {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RolRepository rolRepository;
+
+    private final TrabajoRepository trabajoRepository;
+
+    private final SolicitudRepository solicitudRepository;
+
+    private static final long MAXIMO_DOCUMENTO = 999_999_999_999_999L;
+
     private void validateUser(UsuarioRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("El usuario no puede ser nulo");
+        }
+        if (request.documento() == null || request.documento() <= 0
+                || request.documento() > MAXIMO_DOCUMENTO) {
+            throw new BusinessExceptions.BadRequestException(
+                    "El documento es obligatorio y debe ser un número positivo de máximo 15 dígitos");
         }
         if(request.nombre().isBlank()) {
             throw new IllegalArgumentException("El nombre no puede ser vacío ");
@@ -59,10 +75,14 @@ public class GestionUsuariosUseCase {
         usuarioRepository.save(usuario);
     }
 
-    public Usuario obtenerUsuarioPorId(Integer id) {
+    public Usuario obtenerUsuarioPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new BusinessExceptions.NotFoundException(
                         "Usuario no encontrado con el documento proporcionado"));
+    }
+
+    public boolean existeUsuarioConCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo).isPresent();
     }
 
     public Usuario obtenerUsuarioPorCorreo(String correo) {
@@ -81,14 +101,14 @@ public class GestionUsuariosUseCase {
         usuarioRepository.save(usuario);
     }
 
-    public void eliminarUsuarioPorId(Integer id) {
+    public void eliminarUsuarioPorId(Long id) {
         if (usuarioRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Usuario no encontrado con el documento proporcionado");
         }
         usuarioRepository.deleteById(id);
     }
 
-    public void eliminarUsuarioPorDocumento(Integer documento) {
+    public void eliminarUsuarioPorDocumento(Long documento) {
         usuarioRepository.findById(documento).orElseThrow(
                 () -> new BusinessExceptions.NotFoundException("Usuario no encontrado con el documento proporcionado"));
         usuarioRepository.deleteById(documento);
@@ -136,5 +156,69 @@ public class GestionUsuariosUseCase {
                 usuario.valoracionPromedio(), usuario.genero(), usuario.rol(),
                 usuario.trabajos(), usuario.trabajosRealizados());
         usuarioRepository.save(usuarioDesbloqueado);
+    }
+
+    /*
+     * Operaciones del panel de administración. El administrador que ejecuta la acción
+     * (correoAdmin) no puede bloquearse, eliminarse ni cambiarse el rol a sí mismo.
+     */
+    public Usuario bloquearUsuario(Long documento, String correoAdmin) {
+        Usuario usuario = obtenerUsuarioPorId(documento);
+        validarNoEsElMismoAdmin(usuario, correoAdmin, "No puedes bloquear tu propia cuenta");
+        if (Boolean.TRUE.equals(usuario.bloqueado())) {
+            throw new BusinessExceptions.ConflictException("El usuario ya está bloqueado");
+        }
+        return guardarConBloqueo(usuario, true);
+    }
+
+    public Usuario desbloquearUsuario(Long documento) {
+        Usuario usuario = obtenerUsuarioPorId(documento);
+        if (!Boolean.TRUE.equals(usuario.bloqueado())) {
+            throw new BusinessExceptions.ConflictException("El usuario no está bloqueado");
+        }
+        return guardarConBloqueo(usuario, false);
+    }
+
+    public Usuario cambiarRol(Long documento, String nombreRol, String correoAdmin) {
+        Usuario usuario = obtenerUsuarioPorId(documento);
+        validarNoEsElMismoAdmin(usuario, correoAdmin, "No puedes cambiar tu propio rol");
+        Rol rol = rolRepository.findByNombre(nombreRol.trim().toUpperCase())
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Rol no encontrado: " + nombreRol));
+        Usuario actualizado = new Usuario(usuario.documento(), usuario.nombre(), usuario.primerApellido(),
+                usuario.segundoApellido(), usuario.correo(), usuario.clave(), usuario.telefono(),
+                usuario.bloqueado(), usuario.fechaNacimiento(), usuario.valoracionConteo(),
+                usuario.valoracionPromedio(), usuario.genero(), rol,
+                usuario.trabajos(), usuario.trabajosRealizados());
+        usuarioRepository.save(actualizado);
+        return actualizado;
+    }
+
+    /*
+     * Solo se elimina un usuario sin historial. Si publicó, realizó o se postuló a trabajos,
+     * borrarlo eliminaría ese historial en cascada: en ese caso se debe bloquear.
+     */
+    public void eliminarUsuarioAdmin(Long documento, String correoAdmin) {
+        Usuario usuario = obtenerUsuarioPorId(documento);
+        validarNoEsElMismoAdmin(usuario, correoAdmin, "No puedes eliminar tu propia cuenta");
+        if (trabajoRepository.contarPorUsuario(documento) > 0 || solicitudRepository.contarPorUsuario(documento) > 0) {
+            throw new BusinessExceptions.ConflictException(
+                    "El usuario tiene trabajos o postulaciones registradas; bloquéalo en lugar de eliminarlo");
+        }
+        usuarioRepository.deleteById(documento);
+    }
+
+    private void validarNoEsElMismoAdmin(Usuario usuario, String correoAdmin, String mensaje) {
+        if (usuario.correo().equalsIgnoreCase(correoAdmin)) {
+            throw new BusinessExceptions.BadRequestException(mensaje);
+        }
+    }
+
+    private Usuario guardarConBloqueo(Usuario usuario, boolean bloqueado) {
+        Usuario actualizado = new Usuario(usuario.documento(), usuario.nombre(), usuario.primerApellido(),
+                usuario.segundoApellido(), usuario.correo(), usuario.clave(), usuario.telefono(), bloqueado,
+                usuario.fechaNacimiento(), usuario.valoracionConteo(), usuario.valoracionPromedio(),
+                usuario.genero(), usuario.rol(), usuario.trabajos(), usuario.trabajosRealizados());
+        usuarioRepository.save(actualizado);
+        return actualizado;
     }
 }

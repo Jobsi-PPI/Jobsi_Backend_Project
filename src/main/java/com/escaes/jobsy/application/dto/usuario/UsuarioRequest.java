@@ -3,7 +3,7 @@ package com.escaes.jobsy.application.dto.usuario;
 import java.util.Date;
 
 public record UsuarioRequest(
-        Integer documento,
+        Long documento,
         String nombre,
         String primerApellido,
         String segundoApellido,

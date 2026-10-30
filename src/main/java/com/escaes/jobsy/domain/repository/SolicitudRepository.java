@@ -6,6 +6,7 @@ import com.escaes.jobsy.domain.model.Usuario;
 import com.escaes.jobsy.infraestructure.persistence.enums.EstadoSolicitud;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +33,16 @@ public interface SolicitudRepository {
     void actualizarEstado(UUID trabajoId, EstadoSolicitud estado);
 
     void rechazarOtrasSolicitudes (UUID trabajoId, UUID solicitudId);
+
+    void cerrarSolicitudesPendientes(UUID trabajoId);
+
+    void deleteByTrabajoId(UUID trabajoId);
+
+    long count();
+
+    Map<EstadoSolicitud, Long> contarPorEstado();
+
+    long contarPorUsuario(Long documento);
 
 
 }

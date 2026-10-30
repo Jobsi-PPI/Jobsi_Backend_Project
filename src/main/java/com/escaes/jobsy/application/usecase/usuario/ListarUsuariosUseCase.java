@@ -1,5 +1,6 @@
 package com.escaes.jobsy.application.usecase.usuario;
 
+import com.escaes.jobsy.domain.model.Pagina;
 import com.escaes.jobsy.domain.model.Usuario;
 import com.escaes.jobsy.domain.repository.UsuarioRepository;
 
@@ -20,14 +21,14 @@ public class ListarUsuariosUseCase {
     * de acuerdo a la condición.
     * @return conteo de usuarios.
     */
-    public int contarUsuarios() {
-        return usuarioRepository.findAll().size();
+    public long contarUsuarios() {
+        return usuarioRepository.count();
     }
-    public int contarUsuariosDesbloqueado() {
-        return usuarioRepository.findAllByBloqueado(false).size();
+    public long contarUsuariosDesbloqueado() {
+        return usuarioRepository.countByBloqueado(false);
     }
-    public int contarUsuariosBloqueado() {
-        return usuarioRepository.findAllByBloqueado(true).size();
+    public long contarUsuariosBloqueado() {
+        return usuarioRepository.countByBloqueado(true);
     }
     /*
      * Obtiene todos los usuarios registrados en el sistema
@@ -57,7 +58,7 @@ public class ListarUsuariosUseCase {
      * Búsqueda dinámica de usuarios: cualquier combinación de filtros opcionales,
      * con paginación. Cada filtro nulo simplemente no se aplica.
      */
-    public List<Usuario> buscarUsuarios(Integer documento, String correo, String genero, String rol,
+    public Pagina<Usuario> buscarUsuarios(Long documento, String correo, String genero, String rol,
             Boolean bloqueado, Integer valoracionConteo, Double valoracionPromedio, int size, int page) {
         return usuarioRepository.findUsersCriteria(
                 documento, correo, genero, rol, bloqueado, valoracionConteo, valoracionPromedio, size, page);

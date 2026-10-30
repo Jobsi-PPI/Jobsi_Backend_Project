@@ -3,6 +3,7 @@ package com.escaes.jobsy.application.usecase.categoria;
 import com.escaes.jobsy.domain.model.Categoria;
 import com.escaes.jobsy.domain.repository.CategoriaRepository;
 
+import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +44,15 @@ public class GestionCategoriasUseCase {
             throw new IllegalArgumentException("El nombre no puede ser nulo");
         }
         Categoria categoria=categoriaRepository.findByNombre(nombreCategoria)
-                .orElseThrow(()->new IllegalArgumentException("No existe categoria con nombre: "+nombreCategoria));
+                .orElseThrow(()->new BusinessExceptions.NotFoundException("No existe categoria con nombre: "+nombreCategoria));
+        if (nuevaCategoria == null || nuevaCategoria.isBlank()) {
+            throw new BusinessExceptions.BadRequestException("El nuevo nombre no puede ser vacío");
+        }
+        categoriaRepository.findByNombre(nuevaCategoria)
+                .filter(existente -> !existente.id().equals(categoria.id()))
+                .ifPresent(existente -> {
+                    throw new BusinessExceptions.ConflictException("Ya existe una categoria con nombre: " + nuevaCategoria);
+                });
 
         Categoria actualizado= new Categoria(
                 categoria.id(), nuevaCategoria
@@ -64,7 +73,7 @@ public class GestionCategoriasUseCase {
             throw new IllegalArgumentException("El nombre no puede ser nulo");
         }
         categoriaRepository.findByNombre(NombreCategoria).
-                orElseThrow(()->new IllegalArgumentException("No existe categoria con id:  "+NombreCategoria));
+                orElseThrow(()->new BusinessExceptions.NotFoundException("No existe categoria con nombre: "+NombreCategoria));
         categoriaRepository.deleteByNombre(NombreCategoria);
     }
 }

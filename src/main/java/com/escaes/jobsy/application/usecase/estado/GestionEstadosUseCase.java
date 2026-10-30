@@ -4,15 +4,31 @@ import com.escaes.jobsy.application.dto.estado.EstadoRequest;
 import com.escaes.jobsy.domain.model.Estado;
 import com.escaes.jobsy.domain.repository.EstadoRepository;
 
+import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class GestionEstadosUseCase {
 
     private final EstadoRepository estadoRepository;
+
+    /*
+     * Estados usados por nombre en GestionTrabajosUseCase: renombrarlos o borrarlos rompería el flujo
+     */
+    private static final Set<String> ESTADOS_DEL_SISTEMA =
+            Set.of("PENDIENTE", "ASIGNADO", "FINALIZADO", "CANCELADO");
+
+    private void validarNoEsEstadoDelSistema(String nombreEstado) {
+        if (ESTADOS_DEL_SISTEMA.contains(nombreEstado.trim().toUpperCase())) {
+            throw new BusinessExceptions.ConflictException(
+                    "El estado " + nombreEstado + " es usado por el sistema y no se puede modificar");
+        }
+    }
 
     public void crearEstado(EstadoRequest request){
         if (request.nombre() == null){
@@ -46,7 +62,16 @@ public class GestionEstadosUseCase {
             throw new IllegalArgumentException("El estado no puede ser nulo");
         }
         Estado estado= estadoRepository.findByNombre(nombreEstado)
-                .orElseThrow(()-> new IllegalArgumentException("El estado no existe"));
+                .orElseThrow(()-> new BusinessExceptions.NotFoundException("El estado no existe"));
+        validarNoEsEstadoDelSistema(nombreEstado);
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            throw new BusinessExceptions.BadRequestException("El nuevo nombre no puede ser vacío");
+        }
+        estadoRepository.findByNombre(nuevoEstado)
+                .filter(existente -> !existente.id().equals(estado.id()))
+                .ifPresent(existente -> {
+                    throw new BusinessExceptions.ConflictException("Ya existe un estado con nombre: " + nuevoEstado);
+                });
 
         Estado actualizado= new Estado(
           estado.id(),nuevoEstado
@@ -63,6 +88,9 @@ public class GestionEstadosUseCase {
         if (nombreEstado == null){
             throw new IllegalArgumentException("El nombre de estado es null");
         }
+        estadoRepository.findByNombre(nombreEstado)
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("El estado no existe"));
+        validarNoEsEstadoDelSistema(nombreEstado);
         estadoRepository.deleteByNombre(nombreEstado);
     }
 }

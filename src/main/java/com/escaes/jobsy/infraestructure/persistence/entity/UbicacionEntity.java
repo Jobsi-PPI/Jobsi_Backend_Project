@@ -23,6 +23,6 @@ public class UbicacionEntity {
     @Column(name = "Nombre_Ubicacion",nullable = false, updatable = false,unique = true)
     private String nombreUbicacion;
 
-    @OneToMany(mappedBy = "ubicacion",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ubicacion", fetch = FetchType.LAZY)
     private List<TrabajoEntity> trabajos;
 }

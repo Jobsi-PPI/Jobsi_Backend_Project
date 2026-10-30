@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!-- Fragmentos compartidos por las páginas de recuperación de contraseña.
+     Colores alineados con el frontend: azul #1e3a8a y acento amarillo #ffb906. -->
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <!--/* El token del enlace no viaja a otros sitios en la cabecera Referer. No usar "no-referrer":
+         hace que el navegador envíe "Origin: null" en los formularios y Spring los rechaza por CORS */-->
+    <meta name="referrer" content="same-origin">
+    <title th:text="${titulo} + ' | Jobsi'">Jobsi</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: #1e3a8a;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .tarjeta {
+            width: 100%;
+            max-width: 440px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+        .marca {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin: 0;
+        }
+        .acento {
+            width: 64px;
+            height: 6px;
+            background: #ffb906;
+            border-radius: 3px;
+            margin: 8px 0 24px;
+        }
+        h1 { font-size: 22px; margin: 0 0 8px; }
+        p { color: #4b5563; line-height: 1.5; margin: 0 0 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #6b7280;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        input:focus { outline: 2px solid #1e3a8a; border-color: #1e3a8a; }
+        .boton {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #1e3a8a;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .boton:hover { background: #172e6e; }
+        .enlace {
+            display: block;
+            margin-top: 16px;
+            text-align: center;
+            color: #1e3a8a;
+        }
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+        }
+        .ayuda { font-size: 14px; color: #6b7280; margin-top: -8px; }
+    </style>
+</head>
+<body>
+<div th:fragment="marca">
+    <p class="marca">Jobsi</p>
+    <div class="acento"></div>
+</div>
+</body>
+</html>

@@ -7,7 +7,9 @@ import com.escaes.jobsy.infraestructure.mapper.TrabajoMapper;
 import com.escaes.jobsy.infraestructure.persistence.criteria.TrabajoCriteriaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,6 +117,34 @@ public class JpaTrabajoRepositoryAdapter implements TrabajoRepository {
     @Override
     public List<Trabajo> findByTrabajadorCorreoAndCategoriaAndEstado(String correo, String categoria, String estado) {
         return List.of();
+    }
+
+    @Override
+    public long count() {
+        return springDataTrabajoRepository.count();
+    }
+
+    @Override
+    public Map<String, Long> contarPorEstado() {
+        return aMapa(springDataTrabajoRepository.contarPorEstado());
+    }
+
+    @Override
+    public Map<String, Long> contarPorCategoria() {
+        return aMapa(springDataTrabajoRepository.contarPorCategoria());
+    }
+
+    @Override
+    public long contarPorUsuario(Long documento) {
+        return springDataTrabajoRepository.contarPorUsuario(documento);
+    }
+
+    private static Map<String, Long> aMapa(List<Object[]> filas) {
+        Map<String, Long> resultado = new LinkedHashMap<>();
+        for (Object[] fila : filas) {
+            resultado.put((String) fila[0], (Long) fila[1]);
+        }
+        return resultado;
     }
 
     @Override

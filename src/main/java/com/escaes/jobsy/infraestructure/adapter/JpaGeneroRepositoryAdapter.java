@@ -24,6 +24,7 @@ public class JpaGeneroRepositoryAdapter implements GeneroRepository {
     public void save(Genero genero) {
 
         GeneroEntity generoEntity= new GeneroEntity();
+        generoEntity.setId(genero.id());
         generoEntity.setNombreGenero(genero.nombreGenero());
         springDataGeneroRepository.save(generoEntity);
 
@@ -58,16 +59,19 @@ public class JpaGeneroRepositoryAdapter implements GeneroRepository {
 
     @Override
     public void deleteById(Long id) {
+        springDataGeneroRepository.deleteById(id);
 
     }
 
     @Override
     public void deleteByNombre(String nombre) {
+        springDataGeneroRepository.findByNombreGenero(nombre).ifPresent(springDataGeneroRepository::delete);
 
     }
 
     @Override
     public void delete(String genero) {
+        deleteByNombre(genero);
 
     }
 }

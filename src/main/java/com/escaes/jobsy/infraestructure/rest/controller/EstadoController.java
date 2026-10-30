@@ -77,4 +77,36 @@ public class EstadoController {
         return ResponseEntity.ok(listarEstadosUseCase.listarEstados().stream().map(
                 EstadoMapper::entityToResponse).toList());
     }
+
+    @Operation(summary = "Renombrar estado", description = "Cambia el nombre de un estado. Los estados usados por el sistema (PENDIENTE, ASIGNADO, FINALIZADO, CANCELADO) no se pueden modificar.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estado actualizado",
+                content = @Content(schema = @Schema(implementation = EstadoResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Estado no encontrado", content = @Content),
+        @ApiResponse(responseCode = "409", description = "Estado del sistema o nombre duplicado", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @PutMapping("/admin/state/{name}")
+    public ResponseEntity<EstadoResponse> actualizarEstado(
+            @Parameter(description = "Nombre actual del estado", example = "BLOQUEADO") @PathVariable String name,
+            @RequestBody EstadoRequest request) {
+        gestionEstadosUseCase.actualizarEstado(name, request.nombre());
+        return ResponseEntity.ok(EstadoMapper.requestToResponse(request));
+    }
+
+    @Operation(summary = "Eliminar estado", description = "Elimina un estado que no sea del sistema ni esté en uso por algún trabajo.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Estado eliminado", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Estado no encontrado", content = @Content),
+        @ApiResponse(responseCode = "409", description = "Estado del sistema o en uso", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @DeleteMapping("/admin/state/{name}")
+    public ResponseEntity<Void> eliminarEstado(
+            @Parameter(description = "Nombre del estado", example = "BLOQUEADO") @PathVariable String name) {
+        gestionEstadosUseCase.eliminarEstadoPorNombre(name);
+        return ResponseEntity.noContent().build();
+    }
 }

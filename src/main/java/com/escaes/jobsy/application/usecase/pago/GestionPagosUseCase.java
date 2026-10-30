@@ -4,6 +4,7 @@ import com.escaes.jobsy.application.dto.pago.PagoRequest;
 import com.escaes.jobsy.domain.model.Pago;
 import com.escaes.jobsy.domain.repository.PagoRepository;
 
+import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -53,6 +54,21 @@ public class GestionPagosUseCase {
             throw new IllegalArgumentException("No existe el tipo de pago con el ID proporcionado");
         }
         pagoRepository.delete(pago);
+    }
+
+    public Pago actualizarPagoPorNombre(String nombre, String nuevoNombre) {
+        Pago pago = obtenerPagoPorNombre(nombre);
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            throw new BusinessExceptions.BadRequestException("El nuevo nombre no puede ser vacío");
+        }
+        pagoRepository.findByNombre(nuevoNombre)
+                .filter(existente -> !existente.id().equals(pago.id()))
+                .ifPresent(existente -> {
+                    throw new BusinessExceptions.ConflictException("Ya existe un tipo de pago con nombre: " + nuevoNombre);
+                });
+        Pago actualizado = new Pago(pago.id(), nuevoNombre);
+        pagoRepository.save(actualizado);
+        return actualizado;
     }
 
     public void eliminarPagoPorNombre(String nombre) {

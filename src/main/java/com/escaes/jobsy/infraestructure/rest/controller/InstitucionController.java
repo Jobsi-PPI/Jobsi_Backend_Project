@@ -1,5 +1,6 @@
 package com.escaes.jobsy.infraestructure.rest.controller;
 
+import java.util.UUID;
 import com.escaes.jobsy.application.dto.institucion.InstitucionRequest;
 import com.escaes.jobsy.application.dto.institucion.InstitucionResponse;
 import com.escaes.jobsy.application.dto.institucion.ubicacion.Departamento;
@@ -126,4 +127,18 @@ public class InstitucionController {
                 .map(InstitucionMapper::entityToResponse).toList());
     }
 
+    @Operation(summary = "Eliminar institución", description = "Elimina una institución por su identificador. Requiere rol ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Institución eliminada", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Institución no encontrada", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @DeleteMapping("/admin/institution/{id}")
+    public ResponseEntity<Void> eliminarInstitucion(
+            @Parameter(description = "Identificador de la institución") @PathVariable UUID id) {
+        gestionInstitucionesUseCase.eliminarInstitucionPorId(id);
+        return ResponseEntity.noContent().build();
+    }
 }

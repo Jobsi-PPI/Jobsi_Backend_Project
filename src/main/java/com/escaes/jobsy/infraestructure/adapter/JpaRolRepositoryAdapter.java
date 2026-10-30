@@ -30,7 +30,7 @@ public class JpaRolRepositoryAdapter implements RolRepository {
 
     @Override
     public List<Rol> findAll() {
-        return List.of();
+        return springDataRolRepository.findAll().stream().map(RolMapper::toDomain).toList();
     }
 
     @Override

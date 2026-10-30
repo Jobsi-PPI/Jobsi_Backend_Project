@@ -76,4 +76,35 @@ public class CategoriaController {
                 .body(CategoriaMapper.requestToResponse(request));
     }
 
+    @Operation(summary = "Renombrar categoría", description = "Cambia el nombre de una categoría existente. El nuevo nombre debe ser único.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Categoría actualizada",
+                content = @Content(schema = @Schema(implementation = CatergoriaResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Categoría no encontrada", content = @Content),
+        @ApiResponse(responseCode = "409", description = "Ya existe una categoría con ese nombre", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @PutMapping("/admin/category/{name}")
+    public ResponseEntity<CatergoriaResponse> actualizarCategoria(
+            @Parameter(description = "Nombre actual de la categoría", example = "TAREAS") @PathVariable String name,
+            @RequestBody CategoriaRequest request) {
+        gestionCategoriasUseCase.actualizarCategoria(name, request.nombre());
+        return ResponseEntity.ok(CategoriaMapper.requestToResponse(request));
+    }
+
+    @Operation(summary = "Eliminar categoría", description = "Elimina una categoría. Si hay trabajos que la usan responde 409.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Categoría eliminada", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Categoría no encontrada", content = @Content),
+        @ApiResponse(responseCode = "409", description = "La categoría está en uso", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "Sin permisos de ADMIN", content = @Content)
+    })
+    @DeleteMapping("/admin/category/{name}")
+    public ResponseEntity<Void> eliminarCategoria(
+            @Parameter(description = "Nombre de la categoría", example = "OTRO") @PathVariable String name) {
+        gestionCategoriasUseCase.eliminarCategoriaPorNombre(name);
+        return ResponseEntity.noContent().build();
+    }
 }

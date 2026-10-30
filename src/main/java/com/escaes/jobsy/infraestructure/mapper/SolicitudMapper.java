@@ -1,5 +1,6 @@
 package com.escaes.jobsy.infraestructure.mapper;
 
+import com.escaes.jobsy.application.dto.solicitud.SolicitudAdminResponse;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudResponse;
 import com.escaes.jobsy.application.dto.solicitud.SolicitudUsuarioResponse;
 import com.escaes.jobsy.domain.model.Solicitud;
@@ -42,6 +43,21 @@ public class SolicitudMapper {
                 solicitud.id(),
                 solicitud.trabajador(),
                 solicitud.trabajo(),
+                solicitud.estado(),
+                solicitud.fechaCreacion()
+        );
+    }
+
+    public static SolicitudAdminResponse toAdminResponse(Solicitud solicitud) {
+        if (solicitud == null) {
+            return null;
+        }
+        return new SolicitudAdminResponse(
+                solicitud.id(),
+                solicitud.trabajo() != null ? solicitud.trabajo().id() : null,
+                solicitud.trabajo() != null ? solicitud.trabajo().titulo() : null,
+                solicitud.trabajador() != null ? solicitud.trabajador().nombre() : null,
+                solicitud.trabajador() != null ? solicitud.trabajador().correo() : null,
                 solicitud.estado(),
                 solicitud.fechaCreacion()
         );

@@ -5,6 +5,7 @@ import com.escaes.jobsy.application.service.UbicacionService;
 import com.escaes.jobsy.domain.model.Institucion;
 import com.escaes.jobsy.domain.repository.InstitucionRepository;
 
+import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -51,14 +52,20 @@ public class GestionInstitucionesUseCase {
     }
 
     public Institucion encontrarInstitucion(InstitucionRequest request) {
-        validarYObtenerNombres(request);
+        String[] nombres = validarYObtenerNombres(request);
         return institucionRepository.findByNombreAndDepartamentoAndMuncipio(
                 request.nombre(),
-                request.departamentoCodigo(),
-                request.municipioCodigo()
+                nombres[0],
+                nombres[1]
         ).orElseThrow(() -> new IllegalArgumentException(
                 "No hay datos que coincidan con la institución proporcionada"
         ));
+    }
+
+    public void eliminarInstitucionPorId(UUID id) {
+        Institucion institucion = institucionRepository.findById(id)
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Institución no encontrada"));
+        institucionRepository.delete(institucion);
     }
 
     public void eliminarInstitucion(InstitucionRequest request) {
