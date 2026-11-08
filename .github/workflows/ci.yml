@@ -1,0 +1,41 @@
+name: CI
+
+# Corre en cada PR hacia main/dev y en cada push a esas ramas.
+# Railway debe tener "Wait for CI" activo para no desplegar si este job falla.
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # Tests con Testcontainers (PostgreSQL) + GreenMail: ubuntu-latest ya trae Docker
+      - name: Compilar, testear y empaquetar
+        run: ./mvnw -B -ntp verify
+
+      - name: Publicar reportes de tests si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports/
