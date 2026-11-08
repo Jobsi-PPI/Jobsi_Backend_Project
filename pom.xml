@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.4</version>
+		<version>4.1.2</version>
 		<relativePath/> <!-- Busca el parent en el repositorio -->
 	</parent>
 
@@ -51,9 +51,10 @@
 	<properties>
 		<!-- Versión de Java usada por el proyecto -->
 		<java.version>21</java.version>
-		<greenmail.version>2.1.5</greenmail.version>
-		<!-- 1.21.4+ es compatible con Docker Engine 29 (API mínima 1.40); Boot 3.5.4 trae 1.21.3 -->
-		<testcontainers.version>1.21.4</testcontainers.version>
+		<greenmail.version>2.1.15</greenmail.version>
+		<jjwt.version>0.13.0</jjwt.version>
+		<!-- springdoc 3.x es la línea compatible con Spring Boot 4 -->
+		<springdoc.version>3.2.0</springdoc.version>
 	</properties>
 
 	<!-- ================= DEPENDENCIAS ================= -->
@@ -61,10 +62,10 @@
 
 		<!-- ================== SPRING CORE ================== -->
 
-		<!-- Spring Web: REST APIs, JSON, Tomcat embebido -->
+		<!-- Spring MVC: REST APIs, JSON (Jackson 3), Tomcat embebido -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
 		<!-- Spring Data JPA: ORM con Hibernate -->
@@ -101,10 +102,10 @@
 
 		<!-- ================== MIGRACIONES BD ================== -->
 
-		<!-- Flyway core: versionado de esquema -->
+		<!-- Flyway: versionado de esquema (en Boot 4 la autoconfiguración vive en su propio starter) -->
 		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-flyway</artifactId>
 		</dependency>
 
 		<!-- Fly Way Postgres -->
@@ -119,7 +120,6 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.7</version>
 		</dependency>
 
 		<!-- ================== SEGURIDAD JWT ================== -->
@@ -128,14 +128,14 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.11.5</version>
+			<version>${jjwt.version}</version>
 		</dependency>
 
 		<!-- Implementación de JWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.11.5</version>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -143,7 +143,7 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.11.5</version>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -153,7 +153,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.8.16</version>
+			<version>${springdoc.version}</version>
 		</dependency>
 
 		<!-- ================== DESARROLLO ================== -->
@@ -183,17 +183,24 @@
 
 		<!-- ================== TESTING ================== -->
 
-		<!-- Testing general: JUnit, Mockito, MockMvc -->
+		<!-- Testing general: JUnit, Mockito, AssertJ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
+		<!-- MockMvc (@AutoConfigureMockMvc) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Testing específico de Spring Security -->
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -205,12 +212,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
+			<artifactId>testcontainers-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>postgresql</artifactId>
+			<artifactId>testcontainers-postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
 

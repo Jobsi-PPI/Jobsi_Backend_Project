@@ -44,22 +44,22 @@ public class JwtProvider {
                 .orElseThrow(() -> new RuntimeException("El usuario no tiene rol"));
 
         return Jwts.builder()
-                .setSubject(usuario.correo())
+                .subject(usuario.correo())
                 .claim("role", role)
                 .claim("nombre", usuario.nombre())
                 .claim("genero", usuario.genero().nombreGenero())
                 .claim("fechaNacimiento", usuario.fechaNacimiento() != null ? usuario.fechaNacimiento().toString() : null)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key)
                 .compact();
     }
 
     public Claims validateToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
+        return Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

@@ -1,8 +1,8 @@
 package com.escaes.jobsy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -45,7 +45,7 @@ public abstract class AbstractIntegrationTest {
                         .content(json(Map.of("email", correo, "password", clave))))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        return objectMapper.readTree(respuesta).get("token").asText();
+        return objectMapper.readTree(respuesta).get("token").asString();
     }
 
     protected String tokenAdmin() throws Exception {

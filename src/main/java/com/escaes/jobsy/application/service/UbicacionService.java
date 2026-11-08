@@ -3,8 +3,8 @@ package com.escaes.jobsy.application.service;
 
 import com.escaes.jobsy.application.dto.institucion.ubicacion.Departamento;
 import com.escaes.jobsy.application.dto.institucion.ubicacion.Municipio;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
