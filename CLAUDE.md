@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Jobsy is a Spring Boot 3.5 / Java 21 REST backend for a job-matching platform, built as an academic exercise in Clean / Hexagonal Architecture. Code, comments, and domain names are in Spanish; keep new code consistent with that.
+Jobsy is a Spring Boot 4.1 / Java 21 REST backend (Jackson 3, Testcontainers 2, Hibernate 7) for a job-matching platform, built as an academic exercise in Clean / Hexagonal Architecture. Code, comments, and domain names are in Spanish; keep new code consistent with that.
 
 ## Commands
 

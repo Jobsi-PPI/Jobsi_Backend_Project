@@ -1,8 +1,8 @@
 package com.escaes.jobsy.infraestructure.rest.exception;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.DatabindException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,16 +58,16 @@ public class GlobalExceptionHandler {
     }
 
     /*
-     * Nombre del campo JSON que no se pudo convertir: tipo incorrecto (JsonMappingException)
+     * Nombre del campo JSON que no se pudo convertir: tipo incorrecto (DatabindException)
      * o número fuera de rango (StreamReadException, p. ej. una cédula que no cabe en el tipo).
      */
     private static String campoConError(Throwable causa) {
         try {
-            if (causa instanceof JsonMappingException mapping && !mapping.getPath().isEmpty()) {
-                return mapping.getPath().get(mapping.getPath().size() - 1).getFieldName();
+            if (causa instanceof DatabindException mapping && !mapping.getPath().isEmpty()) {
+                return mapping.getPath().get(mapping.getPath().size() - 1).getPropertyName();
             }
-            if (causa instanceof StreamReadException lectura && lectura.getProcessor() instanceof JsonParser parser) {
-                return parser.getParsingContext().getCurrentName();
+            if (causa instanceof StreamReadException lectura && lectura.processor() instanceof JsonParser parser) {
+                return parser.streamReadContext().currentName();
             }
         } catch (RuntimeException ignorada) {
             // Sin contexto disponible: se responde con el mensaje genérico
