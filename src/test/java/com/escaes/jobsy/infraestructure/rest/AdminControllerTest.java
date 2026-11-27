@@ -18,8 +18,8 @@ class AdminControllerTest extends AbstractIntegrationTest {
 
     @Test
     void endpointsAdminRequierenRolAdmin() throws Exception {
-        registrarUsuario(300000001, "comun@jobsi.test", "Clave12345", "3300000001");
-        String tokenUsuario = login("comun@jobsi.test", "Clave12345");
+        registrarUsuario(300000001, "comun@jobsi.test", "Clave.12345", "3300000001");
+        String tokenUsuario = login("comun@jobsi.test", "Clave.12345");
 
         mockMvc.perform(get("/v1/admin/metrics")).andExpect(status().isUnauthorized());
         mockMvc.perform(get("/v1/admin/metrics").header("Authorization", bearer(tokenUsuario)))
@@ -52,7 +52,7 @@ class AdminControllerTest extends AbstractIntegrationTest {
 
     @Test
     void bloquearYDesbloquearUsuario() throws Exception {
-        registrarUsuario(300000002, "bloq@jobsi.test", "Clave12345", "3300000002");
+        registrarUsuario(300000002, "bloq@jobsi.test", "Clave.12345", "3300000002");
         String admin = tokenAdmin();
 
         mockMvc.perform(patch("/v1/admin/users/300000002/block").header("Authorization", bearer(admin)))
@@ -64,7 +64,7 @@ class AdminControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bloqueado").value(false));
 
-        login("bloq@jobsi.test", "Clave12345");
+        login("bloq@jobsi.test", "Clave.12345");
     }
 
     @Test
@@ -79,7 +79,7 @@ class AdminControllerTest extends AbstractIntegrationTest {
 
     @Test
     void cambiarRolAAdmin() throws Exception {
-        registrarUsuario(300000003, "promovido@jobsi.test", "Clave12345", "3300000003");
+        registrarUsuario(300000003, "promovido@jobsi.test", "Clave.12345", "3300000003");
 
         mockMvc.perform(patch("/v1/admin/users/300000003/role").header("Authorization", bearer(tokenAdmin()))
                         .contentType(MediaType.APPLICATION_JSON).content(json(Map.of("rol", "admin"))))
@@ -87,15 +87,15 @@ class AdminControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.rol").value("ADMIN"));
 
         mockMvc.perform(get("/v1/admin/metrics")
-                        .header("Authorization", bearer(login("promovido@jobsi.test", "Clave12345"))))
+                        .header("Authorization", bearer(login("promovido@jobsi.test", "Clave.12345"))))
                 .andExpect(status().isOk());
     }
 
     @Test
     void eliminarUsuarioSinHistorialYRechazarConHistorial() throws Exception {
-        registrarUsuario(300000004, "borrable@jobsi.test", "Clave12345", "3300000004");
-        registrarUsuario(300000005, "conjobs@jobsi.test", "Clave12345", "3300000005");
-        crearTrabajo(login("conjobs@jobsi.test", "Clave12345"), "TAREAS");
+        registrarUsuario(300000004, "borrable@jobsi.test", "Clave.12345", "3300000004");
+        registrarUsuario(300000005, "conjobs@jobsi.test", "Clave.12345", "3300000005");
+        crearTrabajo(login("conjobs@jobsi.test", "Clave.12345"), "TAREAS");
         String admin = tokenAdmin();
 
         mockMvc.perform(delete("/v1/admin/users/300000004").header("Authorization", bearer(admin)))
@@ -108,11 +108,11 @@ class AdminControllerTest extends AbstractIntegrationTest {
 
     @Test
     void cancelarYEliminarTrabajo() throws Exception {
-        registrarUsuario(300000006, "publica@jobsi.test", "Clave12345", "3300000006");
-        registrarUsuario(300000007, "postula@jobsi.test", "Clave12345", "3300000007");
-        String trabajoId = crearTrabajo(login("publica@jobsi.test", "Clave12345"), "ASESORIAS");
+        registrarUsuario(300000006, "publica@jobsi.test", "Clave.12345", "3300000006");
+        registrarUsuario(300000007, "postula@jobsi.test", "Clave.12345", "3300000007");
+        String trabajoId = crearTrabajo(login("publica@jobsi.test", "Clave.12345"), "ASESORIAS");
         mockMvc.perform(post("/v1/requests")
-                        .header("Authorization", bearer(login("postula@jobsi.test", "Clave12345")))
+                        .header("Authorization", bearer(login("postula@jobsi.test", "Clave.12345")))
                         .contentType(MediaType.APPLICATION_JSON).content(json(Map.of("trabajo", trabajoId))))
                 .andExpect(status().is2xxSuccessful());
         String admin = tokenAdmin();
@@ -148,8 +148,8 @@ class AdminControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(delete("/v1/admin/category/RENOMBRADA").header("Authorization", bearer(admin)))
                 .andExpect(status().isNoContent());
 
-        registrarUsuario(300000008, "usacat@jobsi.test", "Clave12345", "3300000008");
-        crearTrabajo(login("usacat@jobsi.test", "Clave12345"), "MATERIALES");
+        registrarUsuario(300000008, "usacat@jobsi.test", "Clave.12345", "3300000008");
+        crearTrabajo(login("usacat@jobsi.test", "Clave.12345"), "MATERIALES");
         mockMvc.perform(delete("/v1/admin/category/MATERIALES").header("Authorization", bearer(admin)))
                 .andExpect(status().isConflict());
     }
@@ -162,7 +162,7 @@ class AdminControllerTest extends AbstractIntegrationTest {
 
     @Test
     void generoEnUsoNoSeEliminaNiBorraUsuarios() throws Exception {
-        registrarUsuario(300000009, "genero@jobsi.test", "Clave12345", "3300000009");
+        registrarUsuario(300000009, "genero@jobsi.test", "Clave.12345", "3300000009");
         String admin = tokenAdmin();
 
         mockMvc.perform(delete("/v1/admin/gender/Otro").header("Authorization", bearer(admin)))
@@ -186,6 +186,41 @@ class AdminControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.nombre").value("BONO"));
         mockMvc.perform(delete("/v1/admin/payment/BONO").header("Authorization", bearer(admin)))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void crearTrabajoValidaTituloDescripcionYPago() throws Exception {
+        registrarUsuario(300000020, "validajob@jobsi.test", "Clave.12345", "3300000020");
+        String token = login("validajob@jobsi.test", "Clave.12345");
+
+        mockMvc.perform(post("/v1/jobs/create").header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(trabajo("a", "Descripción suficientemente larga", 10000))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("El título debe tener entre 5 y 150")));
+
+        mockMvc.perform(post("/v1/jobs/create").header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(trabajo("12345 !!", "Descripción suficientemente larga", 10000))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("debe contener letras")));
+
+        mockMvc.perform(post("/v1/jobs/create").header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(trabajo("Ayuda con cálculo", "Corta", 10000))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("La descripción debe tener entre 20 y 500")));
+
+        mockMvc.perform(post("/v1/jobs/create").header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(trabajo("Ayuda con cálculo", "Descripción suficientemente larga", 10))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("pago mínimo")));
+    }
+
+    private static Map<String, Object> trabajo(String titulo, String descripcion, double pago) {
+        return Map.of("titulo", titulo, "descripcion", descripcion, "pago", pago,
+                "tipoPago", "EFECTIVO", "ubicacion", "palmas", "categoria", "TAREAS");
     }
 
     private String crearTrabajo(String token, String categoria) throws Exception {

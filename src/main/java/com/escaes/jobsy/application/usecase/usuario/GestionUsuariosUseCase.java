@@ -1,6 +1,8 @@
 package com.escaes.jobsy.application.usecase.usuario;
 
 import com.escaes.jobsy.application.dto.usuario.UsuarioRequest;
+import com.escaes.jobsy.application.validacion.PoliticaClave;
+import com.escaes.jobsy.application.validacion.ReglasValidacion;
 import com.escaes.jobsy.domain.model.Genero;
 import com.escaes.jobsy.domain.model.Rol;
 import com.escaes.jobsy.domain.model.Usuario;
@@ -16,6 +18,11 @@ import org.springframework.stereotype.Service;
 
 import com.escaes.jobsy.infraestructure.rest.exception.BusinessExceptions;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class GestionUsuariosUseCase {
@@ -30,7 +37,7 @@ public class GestionUsuariosUseCase {
 
     private final SolicitudRepository solicitudRepository;
 
-    private static final long MAXIMO_DOCUMENTO = 999_999_999_999_999L;
+    private static final long MAXIMO_DOCUMENTO = ReglasValidacion.DOCUMENTO_MAX;
 
     private void validateUser(UsuarioRequest request) {
         if (request == null) {
@@ -41,12 +48,24 @@ public class GestionUsuariosUseCase {
             throw new BusinessExceptions.BadRequestException(
                     "El documento es obligatorio y debe ser un número positivo de máximo 15 dígitos");
         }
-        if(request.nombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre no puede ser vacío ");
+        /*
+         * Los DTOs ya validan el formato en el REST (@Valid); aquí se repite lo esencial porque
+         * AdminInitializer llama al caso de uso directamente.
+         */
+        validarNombre(request.nombre(), "El nombre");
+        validarNombre(request.primerApellido(), "El primer apellido");
+        if (request.segundoApellido() != null && !request.segundoApellido().isEmpty()) {
+            validarNombre(request.segundoApellido(), "El segundo apellido");
         }
-        if (request.primerApellido().isBlank()) {
-            throw new IllegalArgumentException("El primer apellido no puede ser vacío");
+        if (request.email() == null || request.email().isBlank()) {
+            throw new BusinessExceptions.BadRequestException("El correo es obligatorio");
         }
+        if (request.telefono() == null || !request.telefono().matches(ReglasValidacion.PATRON_TELEFONO)) {
+            throw new BusinessExceptions.BadRequestException(
+                    "El teléfono debe ser un celular de 10 dígitos que empiece por 3");
+        }
+        validarEdad(request.fechaNacimiento());
+        PoliticaClave.validar(request.password(), request.nombre(), request.email());
 
         usuarioRepository.findByDocumentoOrCorreoOrTelefono(
                 request.documento(), request.email(), request.telefono()).ifPresent(existing -> {
@@ -65,6 +84,32 @@ public class GestionUsuariosUseCase {
                     }
                 });
 
+    }
+
+    private static void validarNombre(String valor, String campo) {
+        if (valor == null || valor.isBlank()) {
+            throw new BusinessExceptions.BadRequestException(campo + " es obligatorio");
+        }
+        if (valor.length() < ReglasValidacion.NOMBRE_MIN || valor.length() > ReglasValidacion.NOMBRE_MAX) {
+            throw new BusinessExceptions.BadRequestException(campo + " debe tener entre "
+                    + ReglasValidacion.NOMBRE_MIN + " y " + ReglasValidacion.NOMBRE_MAX + " caracteres");
+        }
+        if (!valor.matches(ReglasValidacion.PATRON_NOMBRE)) {
+            throw new BusinessExceptions.BadRequestException(campo + " " + ReglasValidacion.MENSAJE_NOMBRE);
+        }
+    }
+
+    private static void validarEdad(Date fechaNacimiento) {
+        if (fechaNacimiento == null) {
+            throw new BusinessExceptions.BadRequestException("La fecha de nacimiento es obligatoria");
+        }
+        // ofEpochMilli en lugar de toInstant(): java.sql.Date no soporta toInstant()
+        LocalDate nacimiento = java.time.Instant.ofEpochMilli(fechaNacimiento.getTime())
+                .atZone(ZoneId.systemDefault()).toLocalDate();
+        if (Period.between(nacimiento, LocalDate.now()).getYears() < ReglasValidacion.EDAD_MINIMA) {
+            throw new BusinessExceptions.BadRequestException(
+                    "Debes tener al menos " + ReglasValidacion.EDAD_MINIMA + " años para registrarte");
+        }
     }
 
     public void crearUsuario(UsuarioRequest request, Genero genero, Rol rol) {

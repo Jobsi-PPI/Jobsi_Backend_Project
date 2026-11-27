@@ -27,7 +27,7 @@ public abstract class AbstractIntegrationTest {
 
     protected static final String ADMIN_CORREO = "admin@jobsi.test";
 
-    protected static final String ADMIN_CLAVE = "Admin12345";
+    protected static final String ADMIN_CLAVE = "Jobsi.Test2026";
 
     @Autowired
     protected MockMvc mockMvc;

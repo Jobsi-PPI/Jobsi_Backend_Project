@@ -30,8 +30,8 @@ class AuthControllerTest extends AbstractIntegrationTest {
 
     @Test
     void usuarioBloqueadoNoPuedeIniciarSesion() throws Exception {
-        registrarUsuario(100000001, "bloqueado@jobsi.test", "Clave12345", "3100000001");
-        login("bloqueado@jobsi.test", "Clave12345");
+        registrarUsuario(100000001, "bloqueado@jobsi.test", "Clave.12345", "3100000001");
+        login("bloqueado@jobsi.test", "Clave.12345");
 
         mockMvc.perform(patch("/v1/admin/users/100000001/block")
                         .header("Authorization", bearer(tokenAdmin())))
@@ -39,7 +39,7 @@ class AuthControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json(Map.of("email", "bloqueado@jobsi.test", "password", "Clave12345"))))
+                        .content(json(Map.of("email", "bloqueado@jobsi.test", "password", "Clave.12345"))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value(403));
     }
@@ -53,7 +53,7 @@ class AuthControllerTest extends AbstractIntegrationTest {
                                 "nombre", "Intruso",
                                 "primerApellido", "Prueba",
                                 "email", "intruso@jobsi.test",
-                                "password", "Clave12345",
+                                "password", "Clave.12345",
                                 "telefono", "3100000002",
                                 "fechaNacimiento", "2000-01-01",
                                 "genero", "Otro",
@@ -62,13 +62,13 @@ class AuthControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.rol").value("USER"));
 
         mockMvc.perform(get("/v1/admin/metrics")
-                        .header("Authorization", bearer(login("intruso@jobsi.test", "Clave12345"))))
+                        .header("Authorization", bearer(login("intruso@jobsi.test", "Clave.12345"))))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void registraCedulaDeOnceDigitos() throws Exception {
-        registrarUsuario(11078384392L, "cedulalarga@jobsi.test", "Clave12345", "3100000003");
+        registrarUsuario(11078384392L, "cedulalarga@jobsi.test", "Clave.12345", "3100000003");
 
         mockMvc.perform(get("/v1/admin/users/11078384392").header("Authorization", bearer(tokenAdmin())))
                 .andExpect(status().isOk())
@@ -78,8 +78,8 @@ class AuthControllerTest extends AbstractIntegrationTest {
     @Test
     void documentoFueraDeRangoIndicaElCampo() throws Exception {
         String cuerpo = """
-                {"documento": 99999999999999999999999, "nombre": "X", "primerApellido": "Y",
-                 "email": "rango@jobsi.test", "password": "Clave12345", "telefono": "3100000004",
+                {"documento": 99999999999999999999999, "nombre": "Ximena", "primerApellido": "Yepes",
+                 "email": "rango@jobsi.test", "password": "Clave.12345", "telefono": "3100000004",
                  "fechaNacimiento": "2000-01-01", "genero": "Otro"}
                 """;
         mockMvc.perform(post("/v1/public/users/create").contentType(MediaType.APPLICATION_JSON).content(cuerpo))
@@ -93,12 +93,46 @@ class AuthControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void registroRechazaNombreDeUnaLetraYClaveDebil() throws Exception {
+        String valido = """
+                {"documento": 100000010, "nombre": "Camila", "primerApellido": "Rojas",
+                 "email": "camila@jobsi.test", "password": "Clave.12345", "telefono": "3100000010",
+                 "fechaNacimiento": "2000-01-01", "genero": "Otro"}
+                """;
+
+        mockMvc.perform(post("/v1/public/users/create").contentType(MediaType.APPLICATION_JSON)
+                        .content(valido.replace("\"Camila\"", "\"C\"")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("El nombre debe tener entre 2 y 50")));
+
+        mockMvc.perform(post("/v1/public/users/create").contentType(MediaType.APPLICATION_JSON)
+                        .content(valido.replace("\"Rojas\"", "\"R0jas\"")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("solo puede contener letras")));
+
+        mockMvc.perform(post("/v1/public/users/create").contentType(MediaType.APPLICATION_JSON)
+                        .content(valido.replace("Clave.12345", "12345678")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("mayúscula")));
+
+        mockMvc.perform(post("/v1/public/users/create").contentType(MediaType.APPLICATION_JSON)
+                        .content(valido.replace("3100000010", "12345")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("celular de 10 dígitos")));
+
+        // Segundo apellido vacío es válido (campo opcional)
+        mockMvc.perform(post("/v1/public/users/create").contentType(MediaType.APPLICATION_JSON)
+                        .content(valido.replace("\"genero\"", "\"segundoApellido\": \"\", \"genero\"")))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void perfilDevuelveExactamenteAlUsuarioDelToken() throws Exception {
         // "juana@" contiene "ana@": una búsqueda con LIKE devolvería el usuario equivocado
-        registrarUsuario(100000005, "juana@jobsi.test", "Clave12345", "3100000005");
-        registrarUsuario(100000006, "ana@jobsi.test", "Clave12345", "3100000006");
+        registrarUsuario(100000005, "juana@jobsi.test", "Clave.12345", "3100000005");
+        registrarUsuario(100000006, "ana@jobsi.test", "Clave.12345", "3100000006");
 
-        mockMvc.perform(get("/v1/usuarios/perfil").header("Authorization", bearer(login("ana@jobsi.test", "Clave12345"))))
+        mockMvc.perform(get("/v1/usuarios/perfil").header("Authorization", bearer(login("ana@jobsi.test", "Clave.12345"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("ana@jobsi.test"))
                 .andExpect(jsonPath("$.documento").value(100000006))

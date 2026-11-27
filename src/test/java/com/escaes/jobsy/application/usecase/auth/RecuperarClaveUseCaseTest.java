@@ -100,19 +100,27 @@ class RecuperarClaveUseCaseTest {
         when(tokenRecuperacionRepository.findByTokenHash(anyString())).thenReturn(Optional.of(usado));
         assertThat(useCase.validarToken("abc")).isFalse();
 
-        assertThatThrownBy(() -> useCase.restablecerClave("abc", "ClaveNueva1", "ClaveNueva1"))
+        assertThatThrownBy(() -> useCase.restablecerClave("abc", "Clave.Nueva1", "Clave.Nueva1"))
                 .isInstanceOf(BusinessExceptions.BadRequestException.class)
                 .hasMessageContaining("expirado");
     }
 
     @Test
-    void rechazaClaveCortaOConfirmacionDistinta() {
+    void rechazaClaveDebilOConfirmacionDistinta() {
         when(tokenRecuperacionRepository.findByTokenHash(anyString())).thenReturn(Optional.of(tokenVigente()));
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario(false)));
 
         assertThatThrownBy(() -> useCase.restablecerClave("abc", "corta", "corta"))
                 .isInstanceOf(BusinessExceptions.BadRequestException.class)
                 .hasMessageContaining("al menos 8");
-        assertThatThrownBy(() -> useCase.restablecerClave("abc", "ClaveNueva1", "ClaveNueva2"))
+        assertThatThrownBy(() -> useCase.restablecerClave("abc", "ClaveNueva1", "ClaveNueva1"))
+                .isInstanceOf(BusinessExceptions.BadRequestException.class)
+                .hasMessageContaining("carácter especial");
+        // La usuaria se llama Ana: la clave no puede contener su nombre
+        assertThatThrownBy(() -> useCase.restablecerClave("abc", "Ana.Prueba1", "Ana.Prueba1"))
+                .isInstanceOf(BusinessExceptions.BadRequestException.class)
+                .hasMessageContaining("nombre");
+        assertThatThrownBy(() -> useCase.restablecerClave("abc", "Clave.Nueva1", "Clave.Nueva2"))
                 .isInstanceOf(BusinessExceptions.BadRequestException.class)
                 .hasMessageContaining("no coinciden");
         verify(usuarioRepository, never()).save(any());
@@ -123,11 +131,11 @@ class RecuperarClaveUseCaseTest {
         when(tokenRecuperacionRepository.findByTokenHash(anyString())).thenReturn(Optional.of(tokenVigente()));
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario(false)));
 
-        useCase.restablecerClave("abc", "ClaveNueva1", "ClaveNueva1");
+        useCase.restablecerClave("abc", "Clave.Nueva1", "Clave.Nueva1");
 
         ArgumentCaptor<Usuario> usuario = ArgumentCaptor.forClass(Usuario.class);
         verify(usuarioRepository).save(usuario.capture());
-        assertThat(passwordEncoder.matches("ClaveNueva1", usuario.getValue().clave())).isTrue();
+        assertThat(passwordEncoder.matches("Clave.Nueva1", usuario.getValue().clave())).isTrue();
 
         ArgumentCaptor<TokenRecuperacion> token = ArgumentCaptor.forClass(TokenRecuperacion.class);
         verify(tokenRecuperacionRepository).save(token.capture());
