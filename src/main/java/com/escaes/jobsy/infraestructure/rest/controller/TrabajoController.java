@@ -1,6 +1,7 @@
 package com.escaes.jobsy.infraestructure.rest.controller;
 
 import com.escaes.jobsy.application.dto.trabajo.CrearTrabajoRequest;
+import com.escaes.jobsy.application.dto.trabajo.EditarTrabajoRequest;
 import com.escaes.jobsy.application.dto.trabajo.FinalizarTrabajoRequest;
 import com.escaes.jobsy.application.dto.trabajo.TrabajoResponse;
 import com.escaes.jobsy.application.usecase.trabajo.GestionTrabajosUseCase;
@@ -186,6 +187,28 @@ public class TrabajoController {
         gestionTrabajosUseCase.eliminarTrabajoPorIdYUsuarioCorreoSolicitante(jobId, solicitanteCorreo);
         LOG.info("Trabajo eliminado id: " + jobId + " solicitante correo: " + solicitanteCorreo);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Editar trabajo publicado", description = "Edita título, descripción, ubicación, categoría y tipo de pago de un trabajo PENDIENTE. Solo el creador puede editarlo. El pago es fijo: si se envía un valor distinto al actual se responde 400.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Trabajo editado exitosamente",
+                content = @Content(schema = @Schema(implementation = TrabajoResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos, intento de cambiar el pago o trabajo no PENDIENTE", content = @Content),
+        @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+        @ApiResponse(responseCode = "403", description = "El usuario no es el creador del trabajo", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Trabajo, categoría, ubicación o tipo de pago no encontrado", content = @Content)
+    })
+    @PutMapping("/jobs/edit/{jobId}")
+    public ResponseEntity<TrabajoResponse> editarTrabajo(
+            @Parameter(description = "ID UUID del trabajo a editar", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+            @PathVariable UUID jobId,
+            @Valid @RequestBody EditarTrabajoRequest request,
+            Authentication auth) {
+        String solicitanteCorreo = auth.getName();
+        Trabajo editado = gestionTrabajosUseCase.editarTrabajo(jobId, request, solicitanteCorreo);
+        LOG.info("Trabajo editado id: " + jobId + " solicitante correo: " + solicitanteCorreo);
+        return ResponseEntity.ok(TrabajoMapper.entityToResponse(editado));
     }
 
     @Operation(summary = "Finalizar trabajo", description = "Marca el trabajo como finalizado. Solo el creador puede finalizarlo. Puede incluir valoración del trabajador.")
