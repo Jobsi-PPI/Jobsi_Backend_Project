@@ -1,6 +1,7 @@
 package com.escaes.jobsy.application.usecase.trabajo;
 
 import com.escaes.jobsy.application.dto.trabajo.CrearTrabajoRequest;
+import com.escaes.jobsy.application.dto.trabajo.EditarTrabajoRequest;
 import com.escaes.jobsy.application.dto.trabajo.FinalizarTrabajoRequest;
 import com.escaes.jobsy.application.usecase.valoracion.GestionValoracionCategoriasUseCase;
 import com.escaes.jobsy.application.validacion.ReglasValidacion;
@@ -58,20 +59,27 @@ public class GestionTrabajosUseCase {
                 || request.pago() > Double.parseDouble(ReglasValidacion.PAGO_MAX)) {
             throw new BusinessExceptions.BadRequestException("El pago debe estar entre $1.000 y $10.000.000");
         }
-        validarLongitud(request.titulo(), "El título", ReglasValidacion.TITULO_MIN, ReglasValidacion.TITULO_MAX);
-        if (!request.titulo().matches(ReglasValidacion.PATRON_TITULO)) {
+        validarCamposEditables(request.titulo(), request.descripcion(),
+                request.ubicacion(), request.categoria(), request.tipoPago());
+    }
+
+    /** Reglas comunes a crear y editar (todo salvo el pago). */
+    private static void validarCamposEditables(String titulo, String descripcion, String ubicacion,
+                                               String categoria, String tipoPago) {
+        validarLongitud(titulo, "El título", ReglasValidacion.TITULO_MIN, ReglasValidacion.TITULO_MAX);
+        if (!titulo.matches(ReglasValidacion.PATRON_TITULO)) {
             throw new BusinessExceptions.BadRequestException(
                     "El título debe contener letras, no solo números o símbolos");
         }
-        validarLongitud(request.descripcion(), "La descripción",
+        validarLongitud(descripcion, "La descripción",
                 ReglasValidacion.DESCRIPCION_MIN, ReglasValidacion.DESCRIPCION_MAX);
-        if (request.ubicacion() == null || request.ubicacion().isBlank()) {
+        if (ubicacion == null || ubicacion.isBlank()) {
             throw new BusinessExceptions.BadRequestException("La ubicación es obligatoria");
         }
-        if (request.categoria() == null || request.categoria().isBlank()) {
+        if (categoria == null || categoria.isBlank()) {
             throw new BusinessExceptions.BadRequestException("La categoría es obligatoria");
         }
-        if (request.tipoPago() == null || request.tipoPago().isBlank()) {
+        if (tipoPago == null || tipoPago.isBlank()) {
             throw new BusinessExceptions.BadRequestException("El tipo de pago es obligatorio");
         }
     }
@@ -109,6 +117,53 @@ public class GestionTrabajosUseCase {
         trabajoRepository.save(trabajo);
 
         return trabajo;
+    }
+
+    /**
+     * Edita un Job PENDIENTE de su creador. Se puede cambiar todo menos el pago: si llega un pago
+     * distinto al actual se rechaza. Se conservan id, fecha de publicación, solicitante y estado.
+     */
+    @Transactional
+    public Trabajo editarTrabajo(UUID jobId, EditarTrabajoRequest request, String solicitanteCorreo) {
+        if (request == null) {
+            throw new BusinessExceptions.BadRequestException("El trabajo no puede ser nulo");
+        }
+        Trabajo trabajo = trabajoRepository.findById(jobId)
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Trabajo no encontrado"));
+
+        if (!trabajo.solicitante().correo().equals(solicitanteCorreo)) {
+            throw new BusinessExceptions.ForbiddenException("Solo el creador del trabajo puede editarlo");
+        }
+        if (!"PENDIENTE".equals(trabajo.estado().nombre())) {
+            throw new BusinessExceptions.BadRequestException(
+                    "Solo se pueden editar trabajos en estado PENDIENTE");
+        }
+        if (request.pago() != null && !request.pago().equals(trabajo.pago())) {
+            throw new BusinessExceptions.BadRequestException("El pago no se puede modificar");
+        }
+        validarCamposEditables(request.titulo(), request.descripcion(),
+                request.ubicacion(), request.categoria(), request.tipoPago());
+
+        Categoria categoria = categoriaRepository.findByNombre(request.categoria())
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Categoria no encontrado"));
+        Pago tipoPago = pagoRepository.findByNombre(request.tipoPago())
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Tipo de pago no encontrado"));
+        Ubicacion ubicacion = ubicacionRepository.findByNombre(request.ubicacion());
+
+        Trabajo editado = new Trabajo(
+                trabajo.id(),
+                request.titulo().trim(),
+                request.descripcion().trim(),
+                trabajo.fechaPublicacion(),
+                trabajo.pago(),
+                ubicacion,
+                trabajo.solicitante(),
+                trabajo.trabajador(),
+                categoria,
+                trabajo.estado(),
+                tipoPago);
+        trabajoRepository.save(editado);
+        return editado;
     }
 
     public Trabajo obtenerTrabajoPorId(UUID id) {

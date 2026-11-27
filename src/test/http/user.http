@@ -28,6 +28,21 @@ Authorization: Bearer
 DELETE http://localhost:8080/v1/jobs/published/delete/{jobId}
 Authorization: Bearer
 
+###Este endpoint permite al solicitante editar su trabajo mientras esté PENDIENTE
+# IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
+# El pago es fijo: se puede omitir o enviar el mismo valor; si es distinto responde 400
+PUT http://localhost:8080/v1/jobs/edit/{jobId}
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "titulo": "Instalacion de Docker Desktop",
+  "descripcion": "Se requiere asesoria para instalar y configurar Docker Desktop.",
+  "tipoPago": "TRANSFERENCIA",
+  "ubicacion": "ALMENDROS",
+  "categoria": "ASESORIAS"
+}
+
 ####Este endpoint permite al usuario autenticado abandonar algún trabajo al que se haya postulado
 # IMPORTANTE: Requiere agregar el token en Authorization: Bearer <jwt>
 PATCH http://localhost:8080/v1/jobs/abandon/{jobId}
