@@ -3,6 +3,7 @@ package com.escaes.jobsy.application.usecase.trabajo;
 import com.escaes.jobsy.application.dto.trabajo.CrearTrabajoRequest;
 import com.escaes.jobsy.application.dto.trabajo.FinalizarTrabajoRequest;
 import com.escaes.jobsy.application.usecase.valoracion.GestionValoracionCategoriasUseCase;
+import com.escaes.jobsy.application.validacion.ReglasValidacion;
 import com.escaes.jobsy.domain.model.*;
 import com.escaes.jobsy.domain.repository.*;
 import com.escaes.jobsy.infraestructure.persistence.enums.EstadoSolicitud;
@@ -51,14 +52,38 @@ public class GestionTrabajosUseCase {
         if (solicitanteCorreo == null || solicitanteCorreo.isEmpty()) {
             throw new BusinessExceptions.BadRequestException("El solicitante no puede ser nulo");
         }
-        if (request.pago() <= 0) {
-            throw new BusinessExceptions.BadRequestException("El pago debe ser un valor positivo");
+        // El DTO ya valida esto con @Valid; se repite para cualquier llamada directa al caso de uso
+        if (request.pago() == null
+                || request.pago() < Double.parseDouble(ReglasValidacion.PAGO_MIN)
+                || request.pago() > Double.parseDouble(ReglasValidacion.PAGO_MAX)) {
+            throw new BusinessExceptions.BadRequestException("El pago debe estar entre $1.000 y $10.000.000");
         }
-        if (request.titulo().isEmpty() || request.titulo().isBlank()) {
-            throw new BusinessExceptions.BadRequestException("El titulo no puede ser nulo o vacio");
+        validarLongitud(request.titulo(), "El título", ReglasValidacion.TITULO_MIN, ReglasValidacion.TITULO_MAX);
+        if (!request.titulo().matches(ReglasValidacion.PATRON_TITULO)) {
+            throw new BusinessExceptions.BadRequestException(
+                    "El título debe contener letras, no solo números o símbolos");
         }
-        if (request.ubicacion().isEmpty()) {
-            throw new BusinessExceptions.BadRequestException("La ubicacion no puede ser nulo o vacio");
+        validarLongitud(request.descripcion(), "La descripción",
+                ReglasValidacion.DESCRIPCION_MIN, ReglasValidacion.DESCRIPCION_MAX);
+        if (request.ubicacion() == null || request.ubicacion().isBlank()) {
+            throw new BusinessExceptions.BadRequestException("La ubicación es obligatoria");
+        }
+        if (request.categoria() == null || request.categoria().isBlank()) {
+            throw new BusinessExceptions.BadRequestException("La categoría es obligatoria");
+        }
+        if (request.tipoPago() == null || request.tipoPago().isBlank()) {
+            throw new BusinessExceptions.BadRequestException("El tipo de pago es obligatorio");
+        }
+    }
+
+    private static void validarLongitud(String valor, String campo, int minimo, int maximo) {
+        if (valor == null || valor.isBlank()) {
+            throw new BusinessExceptions.BadRequestException(campo + " es obligatorio");
+        }
+        int longitud = valor.trim().length();
+        if (longitud < minimo || longitud > maximo) {
+            throw new BusinessExceptions.BadRequestException(
+                    campo + " debe tener entre " + minimo + " y " + maximo + " caracteres");
         }
     }
 

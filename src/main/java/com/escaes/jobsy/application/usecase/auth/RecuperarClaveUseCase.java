@@ -1,6 +1,7 @@
 package com.escaes.jobsy.application.usecase.auth;
 
 import com.escaes.jobsy.domain.model.TokenRecuperacion;
+import com.escaes.jobsy.application.validacion.PoliticaClave;
 import com.escaes.jobsy.domain.model.Usuario;
 import com.escaes.jobsy.domain.repository.CorreoService;
 import com.escaes.jobsy.domain.repository.TokenRecuperacionRepository;
@@ -30,7 +31,7 @@ import java.util.Optional;
 @Service
 public class RecuperarClaveUseCase {
 
-    public static final int LONGITUD_MINIMA_CLAVE = 8;
+    public static final int LONGITUD_MINIMA_CLAVE = PoliticaClave.LONGITUD_MINIMA;
 
     private static final String MENSAJE_ENLACE_INVALIDO = "El enlace no es válido o ha expirado";
 
@@ -98,16 +99,13 @@ public class RecuperarClaveUseCase {
         TokenRecuperacion tokenRecuperacion = buscarTokenVigente(token)
                 .orElseThrow(() -> new BusinessExceptions.BadRequestException(MENSAJE_ENLACE_INVALIDO));
 
-        if (nuevaClave == null || nuevaClave.length() < LONGITUD_MINIMA_CLAVE) {
-            throw new BusinessExceptions.BadRequestException(
-                    "La contraseña debe tener al menos " + LONGITUD_MINIMA_CLAVE + " caracteres");
-        }
+        Usuario usuario = usuarioRepository.findById(tokenRecuperacion.usuarioDocumento())
+                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Usuario no encontrado"));
+
+        PoliticaClave.validar(nuevaClave, usuario.nombre(), usuario.correo());
         if (!nuevaClave.equals(confirmacion)) {
             throw new BusinessExceptions.BadRequestException("Las contraseñas no coinciden");
         }
-
-        Usuario usuario = usuarioRepository.findById(tokenRecuperacion.usuarioDocumento())
-                .orElseThrow(() -> new BusinessExceptions.NotFoundException("Usuario no encontrado"));
 
         Usuario actualizado = new Usuario(usuario.documento(), usuario.nombre(), usuario.primerApellido(),
                 usuario.segundoApellido(), usuario.correo(), passwordEncoder.encode(nuevaClave),

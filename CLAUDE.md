@@ -33,13 +33,13 @@ App runs on `http://localhost:8080`. Swagger UI at `/swagger-ui.html`, health ch
 ## Configuration
 
 `application.properties` references env vars supplied by the `.env` file (see `.env.example`) or Docker Compose: `SPRING_PROFILE` (default `dev`), `SERVER_PORT`, `BD_*`, `BD_SCHEMA` (default `jobsi`), `CORS_*`, `JWT_SECRET` (required in prod, ≥32 chars), `ADMIN_*`, `MAIL_*`, `APP_PUBLIC_URL`, `FRONTEND_URL`. Profiles:
-- **dev** — datasource and SMTP provided by Testcontainers (`TestcontainersConfiguration`, `DevServicesConfiguration`); data is lost on stop. Default JWT secret and admin (`admin@jobsi.local` / `Admin12345`).
+- **dev** — datasource and SMTP provided by Testcontainers (`TestcontainersConfiguration`, `DevServicesConfiguration`); data is lost on stop. Default JWT secret and admin (`admin@jobsi.local` / `Jobsi.Dev2026`).
 - **prod** — PostgreSQL from `BD_URL`.
 - **test** — `src/test/resources/application-test.properties`.
 
 **Schema is owned by Flyway** (`src/main/resources/db/migration`, `V1` schema, `V2` reference catalogs, `V3` password-reset tokens) and Hibernate runs with `ddl-auto=validate`. Any entity change needs a new `V<n>__*.sql` migration; never edit an applied migration. Column names follow Spring's default naming (snake_case lowercase of the `@Column` name).
 
-`AdminInitializer` creates the initial ADMIN user from `app.admin.*` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`, …) if no user with that email exists. Catalogs (roles, géneros, estados, categorías, tipos de pago, ubicaciones, categorías de valoración) come from `V2__datos_referencia.sql`.
+`AdminInitializer` creates the initial ADMIN user from `app.admin.*` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`, …) if no user with that email exists. It goes through `GestionUsuariosUseCase.crearUsuario`, so `ADMIN_PASSWORD` must satisfy the password policy or the admin is not created (logged as SEVERE). Catalogs (roles, géneros, estados, categorías, tipos de pago, ubicaciones, categorías de valoración) come from `V2__datos_referencia.sql`.
 
 ## Architecture
 
@@ -60,6 +60,13 @@ Hexagonal layering under `com.escaes.jobsy`. A request flows: **controller → u
 Key rule: there is no separate "adapter" indirection between controllers and use cases — controllers call use cases directly. Domain code must not import Spring or JPA types; that separation is enforced by keeping ports in `domain/repository/` and implementations in `infraestructure/adapter/`.
 
 When adding a new aggregate, follow the existing per-aggregate pattern across all layers: domain record + repository port, use cases, DTOs, JPA entity + Spring Data repo + adapter, mapper, and controller.
+
+## Input validation
+
+- Request DTOs carry Bean Validation annotations (`@Valid` in the controller); `GlobalExceptionHandler.handleValidation` returns 400 with the messages joined by `". "`. Shared limits and regexes live in `application/validacion/ReglasValidacion` (constants, so annotations can use them).
+- Password policy for **new** passwords (registration, reset): `application/validacion/PoliticaClave` — 8–64 chars, upper, lower, digit, special, no spaces, must not contain the user's name or email local part. Login does not apply it.
+- Use cases repeat the essential checks because some callers (e.g. `AdminInitializer`) skip the controller.
+- The frontend mirrors these rules; pending work is listed in `Jobsi_Frontend_Project/docs/VALIDACIONES_PENDIENTES.md`.
 
 ## Security
 

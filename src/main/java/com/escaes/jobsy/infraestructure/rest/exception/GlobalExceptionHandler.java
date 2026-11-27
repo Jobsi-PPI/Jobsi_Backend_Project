@@ -41,9 +41,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+        // Los mensajes de los DTOs ya nombran el campo ("El nombre debe tener..."), se envían tal cual.
+        // Orden estable por campo para que el mensaje no cambie entre peticiones.
         String mensaje = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+                .sorted(java.util.Comparator.comparing(org.springframework.validation.FieldError::getField))
+                .map(org.springframework.validation.FieldError::getDefaultMessage)
+                .distinct()
+                .collect(Collectors.joining(". "));
         return respuesta(HttpStatus.BAD_REQUEST, mensaje);
     }
 

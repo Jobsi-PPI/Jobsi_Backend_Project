@@ -55,7 +55,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:-cambiar-este-secreto-jwt-de-al-menos-32-caracteres}
 
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@jobsi.local}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin12345}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Jobsi.Dev2026}
 
       MAIL_HOST: mailpit
       MAIL_PORT: 1025

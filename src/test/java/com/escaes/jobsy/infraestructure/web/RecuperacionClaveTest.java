@@ -31,7 +31,7 @@ class RecuperacionClaveTest extends AbstractIntegrationTest {
 
     @Test
     void restableceLaClaveConElEnlaceDelCorreo() throws Exception {
-        registrarUsuario(200000001, "recupera@jobsi.test", "ClaveVieja1", "3200000001");
+        registrarUsuario(200000001, "recupera@jobsi.test", "Clave.Vieja1", "3200000001");
 
         mockMvc.perform(post("/auth/password/forgot").param("correo", "recupera@jobsi.test"))
                 .andExpect(status().isOk())
@@ -45,23 +45,23 @@ class RecuperacionClaveTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/auth/password/reset")
                         .param("token", token)
-                        .param("clave", "ClaveNueva1")
-                        .param("confirmacion", "OtraClave1"))
+                        .param("clave", "Clave.Nueva1")
+                        .param("confirmacion", "Otra.Clave1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Las contraseñas no coinciden")));
 
         mockMvc.perform(post("/auth/password/reset")
                         .param("token", token)
-                        .param("clave", "ClaveNueva1")
-                        .param("confirmacion", "ClaveNueva1"))
+                        .param("clave", "Clave.Nueva1")
+                        .param("confirmacion", "Clave.Nueva1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Tu contraseña se actualizó")))
                 .andExpect(content().string(containsString("http://localhost:5173/login")));
 
-        assertThat(login("recupera@jobsi.test", "ClaveNueva1")).isNotBlank();
+        assertThat(login("recupera@jobsi.test", "Clave.Nueva1")).isNotBlank();
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json(Map.of("email", "recupera@jobsi.test", "password", "ClaveVieja1"))))
+                        .content(json(Map.of("email", "recupera@jobsi.test", "password", "Clave.Vieja1"))))
                 .andExpect(status().isUnauthorized());
 
         // El enlace es de un solo uso
@@ -81,7 +81,7 @@ class RecuperacionClaveTest extends AbstractIntegrationTest {
 
     @Test
     void solicitarUnNuevoEnlaceInvalidaElAnterior() throws Exception {
-        registrarUsuario(200000002, "doble@jobsi.test", "ClaveVieja1", "3200000002");
+        registrarUsuario(200000002, "doble@jobsi.test", "Clave.Vieja1", "3200000002");
 
         mockMvc.perform(post("/auth/password/forgot").param("correo", "doble@jobsi.test"));
         String primerToken = extraerTokenDelCorreo("doble@jobsi.test");

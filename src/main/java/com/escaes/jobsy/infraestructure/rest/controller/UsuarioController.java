@@ -55,7 +55,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Datos inválidos (correo duplicado, campos faltantes, etc.)", content = @Content)
     })
     @PostMapping("/public/users/create")
-    public ResponseEntity<UsuarioResponse> crearUsuario(@RequestBody UsuarioRequest request) {
+    public ResponseEntity<UsuarioResponse> crearUsuario(@Valid @RequestBody UsuarioRequest request) {
 
         Genero genero = gestionGenerosUseCase.obtenerGeneroPorNombre(request.genero());
 
